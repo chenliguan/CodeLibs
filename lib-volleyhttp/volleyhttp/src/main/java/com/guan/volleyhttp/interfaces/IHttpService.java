@@ -28,4 +28,12 @@ public interface IHttpService {
      * 设置请求参数
      */
     void setParams(Map<String, String> map);
+
+    void pause();
+
+    boolean cancle();
+
+    boolean isCancle();
+
+    boolean isPause();
 }

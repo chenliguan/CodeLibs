@@ -11,11 +11,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 线程池管理类
  * Created by Administrator on 2017/1/13 0013.
  */
 public class ThreadPoolManager {
 
-    private static final String TAG = "dongnao";
+    private static final String TAG = "tag";
     private static ThreadPoolManager instance = new ThreadPoolManager();
 
     private LinkedBlockingQueue<Future<?>> taskQuene = new LinkedBlockingQueue<>();// 阻塞队列

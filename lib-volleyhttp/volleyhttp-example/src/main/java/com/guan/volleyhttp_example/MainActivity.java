@@ -6,24 +6,27 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.guan.volleyhttp.download.DownloadItemInfo;
+import com.guan.volleyhttp.download.interfaces.IDownloadResponse;
 import com.guan.volleyhttp.interfaces.Response;
-import com.guan.volleyhttp.toolbox.Volley;
+import com.guan.volleyhttp.toolbox.DownFileRequest;
+import com.guan.volleyhttp.toolbox.StringRequest;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String url = "http://apis.juhe.cn/cook/query.php";
+    public static final String URL = "http://apis.juhe.cn/cook/query.php";
     public static final String APPKEY ="8fac966b379367b0e6f0527d634324ee";
 
-    private TextView textView;
+    private TextView tvContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = (TextView) findViewById(R.id.content);
+        tvContent = (TextView) findViewById(R.id.content);
     }
 
     public void login(View view) {
@@ -36,21 +39,61 @@ public class MainActivity extends AppCompatActivity {
         map.put("albums","");
 
         for (int i = 0; i < 10; i++) {
-            Volley.sendRequest(map, url,
+            StringRequest.sendRequest(map, URL,
                     new Response.Listener<String>() {
                         @Override
                         public void onSuccess(String response) {
                             Log.e("tag", "onSuccess:" + response);
-                            textView.setText(response);
+                            tvContent.setText(response);
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onError(String error) {
                             Log.e("tag", "onError:" + error);
-                            textView.setText(error);
+                            tvContent.setText(error);
                         }
                     });
         }
+    }
+
+    public void down(View view) {
+        DownFileRequest.downRequest("http://gdown.baidu.com/data/wisegame/8be18d2c0dc8a9c9/WPSOffice_177.apk", new IDownloadResponse() {
+            @Override
+            public void onDownloadStatusChanged(DownloadItemInfo downloadItemInfo) {
+                tvContent.setText("下载状态:" + downloadItemInfo.getStatus());
+                Log.e("tag", "下载状态:" + downloadItemInfo.getStatus());
+            }
+
+            @Override
+            public void onTotalLengthReceived(DownloadItemInfo downloadItemInfo) {
+                tvContent.setText("下载接收");
+                Log.e("tag", "下载接收");
+            }
+
+            @Override
+            public void onCurrentSizeChanged(DownloadItemInfo downloadItemInfo, double downLenth, long speed) {
+                tvContent.setText("下载长度:" + downLenth + "-----速度:" + speed/1000 +"kb/s");
+                Log.e("tag", "下载长度:" + downLenth + "-----速度:" + speed/1000 +"kb/s");
+            }
+
+            @Override
+            public void onDownloadSuccess(DownloadItemInfo downloadItemInfo) {
+                tvContent.setText("下载成功" + "路径:" + downloadItemInfo.getFilePath() + "-----url:" + downloadItemInfo.getUrl());
+                Log.e("tag", "下载成功" + "路径:" + downloadItemInfo.getFilePath() + "-----url:" + downloadItemInfo.getUrl());
+            }
+
+            @Override
+            public void onDownloadPause(DownloadItemInfo downloadItemInfo) {
+                tvContent.setText("下载暂停:" + downloadItemInfo.getStatus());
+                Log.e("tag", "下载暂停:" + downloadItemInfo.getStatus());
+            }
+
+            @Override
+            public void onDownloadError(DownloadItemInfo downloadItemInfo, int var2, String var3) {
+                tvContent.setText("下载出错");
+                Log.e("tag", "下载出错");
+            }
+        });
     }
 }

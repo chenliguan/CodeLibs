@@ -8,19 +8,22 @@ import com.guan.volleyhttp.interfaces.IHttpService;
  */
 public class HttpTask<T> implements Runnable {
 
-    private IHttpService IHttpService;
+    private IHttpService httpService;
 
     public HttpTask(RequestHodler<T> requestHodler) {
-        IHttpService = requestHodler.getHttpService();
-        IHttpService.setHttpListener(requestHodler.getHttpListener());
-        IHttpService.setUrl(requestHodler.getUrl());
+        httpService = requestHodler.getHttpService();
+        httpService.setHttpListener(requestHodler.getHttpListener());
+        httpService.setUrl(requestHodler.getUrl());
+        //增加方法
+        IHttpListener httpListener = requestHodler.getHttpListener();
         if (requestHodler.getMap() != null) {
-            IHttpService.setParams(requestHodler.getMap());
+            httpService.setParams(requestHodler.getMap());
+            httpListener.addHttpHeader(requestHodler.getMap());
         }
     }
 
     @Override
     public void run() {
-        IHttpService.excute();
+        httpService.excute();
     }
 }

@@ -90,4 +90,24 @@ public class HttpClientService implements IHttpService {
     public void setParams(Map<String, String> map) {
         this.map = map;
     }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public boolean cancle() {
+        return false;
+    }
+
+    @Override
+    public boolean isCancle() {
+        return false;
+    }
+
+    @Override
+    public boolean isPause() {
+        return false;
+    }
 }

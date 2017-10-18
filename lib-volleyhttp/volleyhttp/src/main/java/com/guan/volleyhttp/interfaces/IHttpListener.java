@@ -2,6 +2,8 @@ package com.guan.volleyhttp.interfaces;
 
 import org.apache.http.HttpEntity;
 
+import java.util.Map;
+
 /**
  * 重要3个接口之一：网络处理回调
  * Created by Administrator on 2017/1/13 0013.
@@ -15,4 +17,6 @@ public interface IHttpListener {
     void onSuccess(HttpEntity httpEntity);
 
     void onError(String error);
+
+    void addHttpHeader(Map<String,String> map);
 }

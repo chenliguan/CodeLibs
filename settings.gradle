@@ -1,3 +1,5 @@
 include 'app'
 include 'lib-volleyhttp:volleyhttp'
 include 'lib-volleyhttp:volleyhttp-example'
+include 'lib-lightsqlite:lightsqlite'
+include 'lib-lightsqlite:lightsqlite-example'

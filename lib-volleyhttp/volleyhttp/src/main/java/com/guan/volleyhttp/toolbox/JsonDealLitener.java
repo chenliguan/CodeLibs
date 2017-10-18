@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/1/13 0013.
@@ -60,6 +61,11 @@ public class JsonDealLitener<M> implements IHttpListener {
     @Override
     public void onError(String error) {
         errorListener.onError(error);
+    }
+
+    @Override
+    public void addHttpHeader(Map<String, String> map) {
+
     }
 
     private String getContent(InputStream inputStream) {
