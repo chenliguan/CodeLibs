@@ -35,6 +35,10 @@ public abstract class BaseDao<T> implements IBaseDao<T> {
 
     private String tableName;
 
+    public String getTableName() {
+        return tableName;
+    }
+
     /**
      * 创建表
      */

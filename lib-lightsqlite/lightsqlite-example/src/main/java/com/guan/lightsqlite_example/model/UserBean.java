@@ -9,27 +9,22 @@ import com.guan.lightsqlite.annotion.DbTable;
 @DbTable("tb_user")
 public class UserBean {
 
-    public int user_id=0;
+    public String user_id;
 
     @DbFiled("user_name")
     public String name;
+
     @DbFiled("user_password")
     public String password;
 
-    public UserBean( ) {
-    }
+    @DbFiled("user_status")
+    public Integer status;
 
-    public UserBean(Integer user_id, String name, String password) {
-        this.user_id= user_id;
-        this.name = name;
-        this.password = password;
-    }
-
-    public Integer getUser_Id() {
+    public String getUser_Id() {
         return user_id;
     }
 
-    public void setUser_Id(Integer user_Id) {
+    public void setUser_Id(String user_Id) {
         this.user_id = user_Id;
     }
 
@@ -49,8 +44,21 @@ public class UserBean {
         this.password = password;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
-        return "name  "+name+"  password "+password;
+        return "UserBean{" +
+                "user_id=" + user_id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
