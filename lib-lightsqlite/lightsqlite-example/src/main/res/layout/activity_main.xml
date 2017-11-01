@@ -48,4 +48,28 @@
         android:gravity="center"
         android:onClick="login"
         android:text="多用户登录" />
+
+    <Button
+        android:id="@+id/insertToLocalUser"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:onClick="insertToLocalUser"
+        android:text="插入用户照片数据" />
+
+    <Button
+        android:id="@+id/writeVersion"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:onClick="writeVersion"
+        android:text="写入最新版本号" />
+
+    <Button
+        android:id="@+id/updateDb"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:onClick="updateDb"
+        android:text="更新数据库表" />
 </LinearLayout>

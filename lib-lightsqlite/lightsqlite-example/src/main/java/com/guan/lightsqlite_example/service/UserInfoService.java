@@ -1,8 +1,9 @@
 package com.guan.lightsqlite_example.service;
 
-import com.guan.lightsqlite.dao.IBaseDao;
 import com.guan.lightsqlite_example.dao.UserDao;
 import com.guan.lightsqlite.helper.BaseDaoFactory;
+import com.guan.lightsqlite_example.helper.Constant;
+import com.guan.lightsqlite_example.helper.FileUtil;
 import com.guan.lightsqlite_example.model.UserBean;
 
 import java.util.List;
@@ -12,10 +13,16 @@ import java.util.List;
  */
 public class UserInfoService {
 
-    private IBaseDao<UserBean> userDao;
+    private UserDao userDao;
 
     public UserInfoService() {
-        userDao = BaseDaoFactory.getInstance().getDataHelper(UserDao.class, UserBean.class);
+        userDao = BaseDaoFactory.getInstance().getDataHelper(
+                FileUtil.databasePath(Constant.FILE_NAME,Constant.USER_DB_NAME),
+                UserDao.class, UserBean.class);
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
     }
 
     public void deleteOneUser(UserBean userBean) {

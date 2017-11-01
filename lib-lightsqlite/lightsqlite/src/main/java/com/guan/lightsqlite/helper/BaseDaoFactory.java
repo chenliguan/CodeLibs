@@ -14,25 +14,15 @@ import java.util.Map;
  * Created by Administrator on 2017/1/9 0009.
  */
 public class BaseDaoFactory {
-    private String sqliteDatabasePath;
-
-    private SQLiteDatabase sqLiteDatabase;
-    //-------------添加-------------
-    protected SQLiteDatabase userDatabase;
-    protected Map<String, BaseDao> map = Collections.synchronizedMap(new HashMap<String, BaseDao>());
 
     private static BaseDaoFactory instance = new BaseDaoFactory();
+    private Map<String, BaseDao> map = Collections.synchronizedMap(new HashMap<String, BaseDao>());
 
-    public BaseDaoFactory() {
-        File file = new File(Environment.getExternalStorageDirectory(), "update");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        sqliteDatabasePath = file.getAbsolutePath() + "/user.db";
-        openDatabase();
-    }
+    private BaseDaoFactory() {}
 
-    public synchronized <T extends BaseDao<M>, M> T getDataHelper(Class<T> clazz, Class<M> entityClass) {
+    public <T extends BaseDao<M>, M> T getDataHelper(String sqliteDatabasePath, Class<T> clazz, Class<M> entityClass) {
+        SQLiteDatabase sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(sqliteDatabasePath, null);
+
         BaseDao baseDao = null;
         if (map.get(clazz.getSimpleName()) != null) {
             return (T) map.get(clazz.getSimpleName());
@@ -48,10 +38,6 @@ public class BaseDaoFactory {
         }
 
         return (T) baseDao;
-    }
-
-    private void openDatabase() {
-        this.sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(sqliteDatabasePath, null);
     }
 
     public static BaseDaoFactory getInstance() {

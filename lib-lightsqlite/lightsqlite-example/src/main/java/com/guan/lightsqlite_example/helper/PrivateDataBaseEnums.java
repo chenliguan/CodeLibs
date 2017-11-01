@@ -2,9 +2,9 @@ package com.guan.lightsqlite_example.helper;
 
 import android.os.Environment;
 
-import com.guan.lightsqlite.helper.BaseDaoFactory;
 import com.guan.lightsqlite_example.dao.UserDao;
 import com.guan.lightsqlite_example.model.UserBean;
+import com.guan.lightsqlite_example.service.UserInfoService;
 
 import java.io.File;
 
@@ -35,17 +35,14 @@ public enum PrivateDataBaseEnums {
      * @return
      */
     public String getValue() {
-        UserDao userDao = BaseDaoFactory.getInstance().getDataHelper(UserDao.class, UserBean.class);
+        UserInfoService userService = new UserInfoService();
+        UserDao userDao = userService.getUserDao();
         if (userDao != null) {
             UserBean currentUser = userDao.getCurrentUser();
             if (currentUser != null) {
-                File file = new File(Environment.getExternalStorageDirectory(), "update");
-                if (!file.exists()) {
-                    file.mkdirs();
-                }
-                return file.getAbsolutePath() + "/" + currentUser.getUser_Id() + "/logic.db";
+                File file = FileUtil.getFile(Environment.getExternalStorageDirectory() + "/" + Constant.FILE_NAME + "/" + currentUser.getUser_Id());
+                value = file.getAbsolutePath() + Constant.FILE_DB_NAMEE;
             }
-
         }
         return value;
     }
