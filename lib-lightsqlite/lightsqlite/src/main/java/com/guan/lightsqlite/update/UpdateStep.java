@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName: UpdateStep
- * @Description: 数据库升级脚本信息
- * @date 2012-12-6 下午1:46:32
+ * 数据库升级脚本信息
  */
 public class UpdateStep {
     /**

@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName: UpdateDbXml
- * @Description: 升级更新数据库
- * @date 2012-12-6 下午1:37:47
+ * 升级更新数据库
  */
 public class UpdateDbXml {
     /**

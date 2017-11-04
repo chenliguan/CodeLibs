@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName: CreateDb
- * @Description: 创建数据库脚本
- * @date 2012-12-6 下午1:49:13
+ * 创建数据库脚本
  */
 public class CreateDb {
 

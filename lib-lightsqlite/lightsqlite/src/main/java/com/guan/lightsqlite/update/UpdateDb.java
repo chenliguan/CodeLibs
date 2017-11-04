@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName: UpdateDb
- * @Description: 更新数据库脚本
- * @date 2012-12-6 下午1:52:34
+ * 更新数据库脚本
  */
 public class UpdateDb {
     /**
