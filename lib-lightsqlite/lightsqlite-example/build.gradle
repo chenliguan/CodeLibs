@@ -19,6 +19,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -29,6 +34,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.2.0'
     testCompile 'junit:junit:4.12'
 
-    compile project(':lib-lightsqlite:lightsqlite')
-//    compile 'com.guan.codelibs:lightsqlite:1.0.0'
+//    compile project(':lib-lightsqlite:lightsqlite')
+    compile 'com.guan.codelibs:lightsqlite:1.0.1'
 }

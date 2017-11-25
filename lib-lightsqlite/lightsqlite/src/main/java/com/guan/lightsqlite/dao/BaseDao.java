@@ -179,7 +179,7 @@ public abstract class BaseDao<T> implements IBaseDao<T> {
                     // 然后以列名拿到：列名在游标的位置
                     Integer colmunIndex = cursor.getColumnIndex(colomunName);
 
-                    // 获取key对应的值：成员变量(Field对象)
+                    // 获取relationMap里面key对应的value值field：成员变量(Field对象)
                     Field field = (Field) entry.getValue();
                     Class type = field.getType();
                     if (colmunIndex != -1) {

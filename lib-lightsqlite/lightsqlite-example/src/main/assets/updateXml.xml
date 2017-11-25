@@ -51,6 +51,7 @@
         </updateDb>
     </updateStep>
 
+    <!-- V2升级到V3 -->
     <updateStep
         versionFrom="V2"
         versionTo="V3">
