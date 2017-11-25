@@ -28,7 +28,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
 
-    compile project(':lib-imageloader:imageloader')
-
+//    compile project(':lib-imageloader:imageloader')
+    compile 'com.guan.codelibs:imageloader:1.0.0'
     testCompile 'junit:junit:4.12'
 }

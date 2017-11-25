@@ -10,13 +10,21 @@ import com.guan.imageloader.policy.ReversePolicy;
  */
 public class ImageLoaderConfig {
 
-    //缓存策略
+    /**
+     * 缓存策略
+     */
     private BitmapCache bitmapCache = new MemoryCache();
-    //加载策略
+    /**
+     * 加载策略
+     */
     private LoadPolicy loadPolicy = new ReversePolicy();
-    //默认线程数
+    /**
+     * 默认线程数
+     */
     private int defaultThreadCount = Runtime.getRuntime().availableProcessors();
-    //显示的配置
+    /**
+     * 显示的配置
+     */
     private DisplayConfig displayConfig = new DisplayConfig();
 
     private ImageLoaderConfig() {
@@ -45,7 +53,6 @@ public class ImageLoaderConfig {
         }
 
         /**
-         * &
          * 设置加载策略
          *
          * @param loadPolicy
