@@ -10,10 +10,13 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.guan.imageloader.cache.DoubleCache;
 import com.guan.imageloader.config.ImageLoaderConfig;
 import com.guan.imageloader.core.SimpleImageLoader;
 import com.guan.imageloader.policy.ReversePolicy;
+
+import java.util.LinkedHashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,9 +45,11 @@ public class MainActivity extends AppCompatActivity {
     private class MyAdapter extends BaseAdapter {
 
         private LayoutInflater inflater;
+        private Context context;
 
         MyAdapter(Context context) {
             inflater = LayoutInflater.from(context);
+            this.context = context;
         }
 
         @Override
@@ -68,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
             ImageView imageView = (ImageView) item.findViewById(R.id.iv);
             //请求图片
             imageLoader.displayImage(imageView, imageThumbUrls[position]);
+
+            Glide.with(context)
+                    .load(imageThumbUrls[position])
+                    .override(0,9)
+                    .centerCrop()
+                    .fitCenter()
+                    .into(imageView);
             return item;
         }
     }

@@ -19,21 +19,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
-    //    compile project(':lib-imageloader:imageloader')
-    compile 'com.guan.codelibs:imageloader:1.0.0'
+
+    compile project(':lib-rxjava:rxjava')
+//    compile 'com.guan.codelibs:volleyhttp:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile files('libs/glide-3.6.1.jar')
 }
