@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/live_share_qq"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="QQ"/>
+    <TextView
+        android:id="@+id/live_share_circle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="朋友圈"/>
+    <TextView
+        android:id="@+id/live_share_weixin"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="微信"/>
+    <TextView
+        android:id="@+id/live_share_qzone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text="QQ空间"/>
+</LinearLayout>
