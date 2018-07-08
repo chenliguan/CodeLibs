@@ -16,7 +16,7 @@ import java.io.File;
 public class LocalLoader extends AbstarctLoader {
 
     @Override
-    protected Bitmap onLoad(BitmapRequest request) {
+    protected Bitmap onLoad(BitmapRequest request, boolean ivCompressEnable) {
         //得到本地图片的路径
         final String path = Uri.parse(request.getImageUrl()).getPath();
         File file = new File(path);
@@ -31,7 +31,6 @@ public class LocalLoader extends AbstarctLoader {
             }
         };
 
-        return decoder.decodeBitmap(ImageViewHelper.getImageViewWidth(request.getImageView())
-                , ImageViewHelper.getImageViewHeight(request.getImageView()));
+        return decoder.decodeBitmap(ImageViewHelper.getImageViewWidth(request.getImageView()), ImageViewHelper.getImageViewHeight(request.getImageView()), ivCompressEnable);
     }
 }

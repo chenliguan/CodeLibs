@@ -9,7 +9,7 @@ import com.guan.imageloader.request.BitmapRequest;
  */
 public class NullLoader extends AbstarctLoader {
     @Override
-    protected Bitmap onLoad(BitmapRequest request) {
+    protected Bitmap onLoad(BitmapRequest request, boolean ivCompressEnable) {
         return null;
     }
 }

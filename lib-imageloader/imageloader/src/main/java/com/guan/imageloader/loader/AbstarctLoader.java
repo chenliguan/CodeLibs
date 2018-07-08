@@ -21,15 +21,19 @@ public abstract class AbstarctLoader implements Loader {
     @Override
     public void loadImage(BitmapRequest request) {
         //从缓存取到Bitmap
-        Bitmap bitmap = bitmapCache.get(request);
+        Bitmap bitmap = null;
+        if (bitmapCache != null) {
+            bitmap = bitmapCache.get(request);
+        }
         if (bitmap == null) {
             //显示默认加载图片
             showLoadingImage(request);
             //开始真正加载图片
-            bitmap = onLoad(request);
+            bitmap = onLoad(request, displayConfig.ivCompressEnable);
             //缓存图片
             cacheBitmap(request, bitmap);
         }
+
         //交给主线程显示
         deliveryToUIThread(request, bitmap);
     }
@@ -59,7 +63,7 @@ public abstract class AbstarctLoader implements Loader {
     }
 
     //抽象加载策略  因为加载网络图片和本地图片有差异
-    protected abstract Bitmap onLoad(BitmapRequest request);
+    protected abstract Bitmap onLoad(BitmapRequest request, boolean ivCompressEnable);
 
     /**
      * 缓存图片
@@ -68,6 +72,10 @@ public abstract class AbstarctLoader implements Loader {
      * @param bitmap
      */
     private void cacheBitmap(BitmapRequest request, Bitmap bitmap) {
+        if (bitmapCache == null) {
+            return;
+        }
+
         if (request != null && bitmap != null) {
             synchronized (AbstarctLoader.class) {
                 bitmapCache.put(request, bitmap);

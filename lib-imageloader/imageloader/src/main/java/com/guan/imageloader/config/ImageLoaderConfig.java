@@ -96,6 +96,17 @@ public class ImageLoaderConfig {
             return this;
         }
 
+        /**
+         * 设置是否对图片压缩处理
+         *
+         * @param ivCompressEnable
+         * @return
+         */
+        public Builder setIvCompressEnable(boolean ivCompressEnable) {
+            config.displayConfig.ivCompressEnable = ivCompressEnable;
+            return this;
+        }
+
         public ImageLoaderConfig build() {
             return config;
         }

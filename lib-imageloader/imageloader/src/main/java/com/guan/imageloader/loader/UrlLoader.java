@@ -21,7 +21,7 @@ import java.net.URL;
 public class UrlLoader extends AbstarctLoader {
 
     @Override
-    protected Bitmap onLoad(final BitmapRequest request) {
+    protected Bitmap onLoad(final BitmapRequest request, boolean ivCompressEnable) {
         //先下载，后读取
         downloadImgByUrl(request.getImageUrl(), getCache(request.getImageUriMD5()));
 
@@ -32,8 +32,7 @@ public class UrlLoader extends AbstarctLoader {
             }
         };
 
-        return decoder.decodeBitmap(ImageViewHelper.getImageViewWidth(request.getImageView()),
-                ImageViewHelper.getImageViewHeight(request.getImageView()));
+        return decoder.decodeBitmap(ImageViewHelper.getImageViewWidth(request.getImageView()), ImageViewHelper.getImageViewHeight(request.getImageView()), ivCompressEnable);
     }
 
     private static boolean downloadImgByUrl(String urlStr, File file) {

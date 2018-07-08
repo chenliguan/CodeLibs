@@ -1,6 +1,7 @@
 package com.guan.volleyhttp_example;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tvContent = (TextView) findViewById(R.id.content);
+        Handler handler = new Handler();
+        handler.sendEmptyMessage(1);
     }
 
     public void login(View view) {

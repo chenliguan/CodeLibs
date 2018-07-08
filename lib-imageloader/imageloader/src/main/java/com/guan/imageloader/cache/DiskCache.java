@@ -65,6 +65,10 @@ public class DiskCache implements BitmapCache {
 
     @Override
     public void put(BitmapRequest request, Bitmap bitmap) {
+        if (mDiskLruCache == null) {
+            return;
+        }
+
         DiskLruCache.Editor edtor = null;
         OutputStream os = null;
         try {
@@ -99,6 +103,10 @@ public class DiskCache implements BitmapCache {
 
     @Override
     public Bitmap get(BitmapRequest request) {
+        if (mDiskLruCache == null) {
+            return null;
+        }
+
         try {
             DiskLruCache.Snapshot snapshot = mDiskLruCache.get(request.getImageUriMD5());
             if (snapshot != null) {
@@ -113,6 +121,10 @@ public class DiskCache implements BitmapCache {
 
     @Override
     public void remove(BitmapRequest request) {
+        if (mDiskLruCache == null) {
+            return;
+        }
+
         try {
             mDiskLruCache.remove(request.getImageUriMD5());
         } catch (IOException e) {

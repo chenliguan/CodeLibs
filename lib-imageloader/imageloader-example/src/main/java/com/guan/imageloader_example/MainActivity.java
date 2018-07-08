@@ -10,36 +10,49 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.guan.imageloader.cache.DoubleCache;
 import com.guan.imageloader.config.ImageLoaderConfig;
 import com.guan.imageloader.core.SimpleImageLoader;
 import com.guan.imageloader.policy.ReversePolicy;
 
-import java.util.LinkedHashMap;
-
 public class MainActivity extends AppCompatActivity {
 
     private SimpleImageLoader imageLoader;
+    /**
+     * 是否对图片压缩处理
+     */
+    private boolean ivCompressEnable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list);
-        GridView listview = (GridView) findViewById(R.id.listview);
-        listview.setAdapter(new MyAdapter(this));
 
         //配置
         ImageLoaderConfig.Builder builder = new ImageLoaderConfig.Builder();
-        ImageLoaderConfig config = builder.setThreadCount(3) //线程数量
-                .setLoadPolicy(new ReversePolicy()) //加载策略
-                .setCachePolicy(new DoubleCache(this)) //缓存策略
+        ImageLoaderConfig config = builder.setThreadCount(3) // 线程数量
+                .setLoadPolicy(new ReversePolicy())
+                 // 根据是否对图片压缩处理，设置缓存策略（保持基本条件一致）
+                .setCachePolicy(ivCompressEnable? new DoubleCache(this) : null)
+                 // 是否对图片压缩处理
+                .setIvCompressEnable(ivCompressEnable)
                 .setLoadingImage(R.drawable.loading)
                 .setFaildImage(R.drawable.not_found)
                 .build();
 
         //初始化
         imageLoader = SimpleImageLoader.getInstance(config);
+
+        intGridView();
+    }
+
+
+    /**
+     * 初始化GridView
+     */
+    private void intGridView() {
+        GridView listview = (GridView) findViewById(R.id.listview);
+        listview.setAdapter(new MyAdapter(this));
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -71,24 +84,42 @@ public class MainActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             View item = inflater.inflate(R.layout.item, null);
             ImageView imageView = (ImageView) item.findViewById(R.id.iv);
-            //请求图片
+
+            /**
+             * 加载大图-对比未压缩和压缩的结果
+             */
+             /**
+              * 直接加载本地大图
+              * 未压缩-抛出OOM异常：java.lang.OutOfMemoryError: Failed to allocate a 305209092 byte allocation with 12112306 free bytes and 174MB until OOM
+              */
+//            imageView.setImageResource(R.drawable.iv_big);
+
+            /**
+             * 自定义框架请求图片
+             *
+             * ivCompressEnable:true
+             * 压缩-不会抛出OOM异常：
+             *
+             * ivCompressEnable：false
+             * 未压缩-抛出OOM异常：java.lang.OutOfMemoryError: Failed to allocate a 33912132 byte allocation with 13357108 free bytes and 12MB until OOM
+             *
+             */
             imageLoader.displayImage(imageView, imageThumbUrls[position]);
 
-            Glide.with(context)
-                    .load(imageThumbUrls[position])
-                    .override(0,9)
-                    .centerCrop()
-                    .fitCenter()
-                    .into(imageView);
+            /**
+             * Glide框架请求
+             */
+//            Glide.with(context)
+//                    .load(imageThumbUrls[position])
+//                    .override(0,9)
+//                    .centerCrop()
+//                    .fitCenter()
+//                    .into(imageView);
             return item;
         }
     }
 
     public final static String[] imageThumbUrls = new String[]{
-            "http://img.my.csdn.net/uploads/201407/26/1406383299_1976.jpg",
-            "http://img.my.csdn.net/uploads/201407/26/1406383291_6518.jpg",
-            "http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg",
-            "http://img.my.csdn.net/uploads/201407/26/1406383290_9329.jpg",//DB123421AC
             "http://img.my.csdn.net/uploads/201407/26/1406383290_1042.jpg",
             "http://img.my.csdn.net/uploads/201407/26/1406383275_3977.jpg",
             "http://img.my.csdn.net/uploads/201407/26/1406383265_8550.jpg",
@@ -169,5 +200,6 @@ public class MainActivity extends AppCompatActivity {
             "http://img.my.csdn.net/uploads/201407/26/1406382767_4772.jpg",
             "http://img.my.csdn.net/uploads/201407/26/1406382766_4924.jpg",
             "http://img.my.csdn.net/uploads/201407/26/1406382766_5762.jpg",
-            "http://img.my.csdn.net/uploads/201407/26/1406382765_7341.jpg"};
+            "http://img.my.csdn.net/uploads/201407/26/1406382765_7341.jpg"
+    };
 }
