@@ -56,6 +56,10 @@ public abstract class BitmapDecoder {
      * @param reqHeight
      */
     private int calculateSampleSizeWithOption(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        if (reqWidth == 0 || reqHeight == 0) {
+            return 1;
+        }
+
         //计算缩放的比例，图片的原始宽高
         int width = options.outWidth;
         int height = options.outHeight;
@@ -63,7 +67,7 @@ public abstract class BitmapDecoder {
         int inSampleSize = 1;
         //reqWidth---ImageView的宽
         if (width > reqWidth || height > reqHeight) {
-            //宽高的缩放比例（图片原始宽高/ImageView的宽高）
+            //宽高的缩放比例，图片原始宽高/ImageView的宽高（四舍五入取整数）
             int heightRatio = Math.round((float) height / (float) reqHeight);
             int widthRatio = Math.round((float) width / (float) reqWidth);
 

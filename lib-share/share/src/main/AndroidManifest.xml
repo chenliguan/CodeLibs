@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.fungo.share">
+    package="org.guan.share">
 
     <application
         android:allowBackup="true"
