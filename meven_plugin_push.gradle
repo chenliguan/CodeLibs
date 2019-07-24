@@ -1,16 +1,23 @@
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
+group = GROUP
+
+version = VERSION_NAME
+
+// 生成源文件
 task sourcesJar(type: Jar) {
     from sourceSets.main.allGroovy
     classifier = 'sources'
 }
 
+// 生成Javadoc文档
 task javadocJar(type: Jar, dependsOn: groovydoc) {
     from groovydoc.destinationDir
     classifier = 'javadoc'
 }
 
+// 上传到JCenter所需要的源码文件
 artifacts {
     archives javadocJar
     archives sourcesJar
@@ -25,14 +32,12 @@ install {
                 name POM_ARTIFACT_NAME
                 description DESC
                 url HOME_URL
-
                 licenses {
                     license {
                         name 'The Apache Software License, Version 2.0'
                         url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
-
                 developers {
                     developer {
                         // 开发者的个人信息
@@ -41,7 +46,6 @@ install {
                         email 'chenliguan8@gmail.com'
                     }
                 }
-
                 scm {
                     connection GIT_URL
                     developerConnection GIT_URL
