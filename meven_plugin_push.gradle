@@ -1,0 +1,86 @@
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allGroovy
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: groovydoc) {
+    from groovydoc.destinationDir
+    classifier = 'javadoc'
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+// 配置maven库，生成POM.xml文件
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name POM_ARTIFACT_NAME
+                description DESC
+                url HOME_URL
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        // 开发者的个人信息
+                        id 'xguan'
+                        name 'chenliguan'
+                        email 'chenliguan8@gmail.com'
+                    }
+                }
+
+                scm {
+                    connection GIT_URL
+                    developerConnection GIT_URL
+                    url HOME_URL
+                }
+            }
+        }
+    }
+}
+
+// local.properties忽略上传github
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("MAVEN_USER")
+    key = properties.getProperty("MAVEN_APIKEY")
+    configurations = ['archives']
+    pkg {
+        // repo值必须要和你创建Maven仓库的时候的名字一样
+        repo = "maven"
+        // 发布到JCenter上的项目名字
+        name = POM_ARTIFACT_NAME
+        desc = DESC
+        websiteUrl = HOME_URL
+        vcsUrl = GIT_URL
+        labels = ['gradle', 'plugin', 'time']
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
+
+javadoc {
+    options {
+        // 避免中文注释乱码
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "http://docs.oracle.com/javase/7/docs/api"
+    }
+}

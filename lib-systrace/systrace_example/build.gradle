@@ -27,8 +27,14 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.2.0'
     testCompile 'junit:junit:4.12'
+}
 
-    compile project(':lib-systrace:systrace')
+// com.codelibs.systrace-plugin为resources/META-INF/gradle-plugins下的properties文件名称
+apply plugin: 'com.codelibs.systrace-plugin'
+systrace {
+    enable = true
+    baseMethodMapFile = "${project.buildDir}/systrace_output/Debug.methodmap"
+    blackListFile = "${project.projectDir}/blacklist/blackMethodList.txt"
 }

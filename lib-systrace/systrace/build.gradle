@@ -1,38 +1,41 @@
-apply plugin: 'com.android.library'
-
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
-}
+apply plugin: 'groovy'
+apply plugin: 'maven'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    testCompile 'junit:junit:4.12'
+    //gradle sdk
+    compile gradleApi()
+    //groovy sdk
+    compile localGroovy()
+
+    compile group: 'org.ow2.asm', name: 'asm', version: '5.1'
+    compile group: 'org.ow2.asm', name: 'asm-commons', version: '5.1'
+    compile 'com.android.tools.build:gradle:2.1.0'
+    compile 'com.android.tools.lint:lint:26.0.1'
+    compile 'com.android.tools.lint:lint-api:26.0.1'
+    compile 'com.android.tools.lint:lint-checks:26.0.1'
 }
 
-apply from: '../../maven_push.gradle'
+repositories {
+    mavenCentral()
+}
+
+//group和version在后面使用自定义插件的时候会用到
+group='com.codelibs.systrace-plugin'
+version='1.0.0'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //提交到远程服务器：
+            // repository(url: "http://www.xxx.com/repos") {
+            //    authentication(userName: "admin", password: "admin")
+            // }
+
+            // 本地的Maven地址:当前工程下（../是在seniorlibs-master下）
+            repository(url: uri("../repository"))
+        }
+    }
+}
+
+//apply from: '../../meven_plugin_push.gradle'

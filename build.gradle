@@ -4,6 +4,11 @@ buildscript {
     repositories {
         jcenter()
         google()
+
+        maven {
+            // 添加Maven的本地依赖
+            url uri('./lib-systrace/repository')
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0'
@@ -12,6 +17,8 @@ buildscript {
         // in the individual module build.gradle files
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+
+        classpath ("com.codelibs.systrace-plugin:systrace:1.0.0") { changing = true }
     }
 }
 
