@@ -32,9 +32,9 @@ dependencies {
 }
 
 // com.codelibs.systrace-plugin为resources/META-INF/gradle-plugins下的properties文件名称
-apply plugin: 'com.codelibs.systrace-plugin'
-systrace {
-    enable = true
-    baseMethodMapFile = "${project.buildDir}/systrace_output/Debug.methodmap"
-    blackListFile = "${project.projectDir}/blacklist/blackMethodList.txt"
-}
+//apply plugin: 'com.codelibs.systrace-plugin'
+//systrace {
+//    enable = true
+//    baseMethodMapFile = "${project.buildDir}/systrace_output/Debug.methodmap"
+//    blackListFile = "${project.projectDir}/blacklist/blackMethodList.txt"
+//}

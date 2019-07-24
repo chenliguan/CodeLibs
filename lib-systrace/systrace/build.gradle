@@ -20,22 +20,22 @@ repositories {
     mavenCentral()
 }
 
-//group和version在后面使用自定义插件的时候会用到
-group='com.codelibs.systrace-plugin'
-version='1.0.0'
+////group和version在后面使用自定义插件的时候会用到
+//group='com.codelibs.systrace-plugin'
+//version='1.0.0'
+//
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            //提交到远程服务器：
+//            // repository(url: "http://www.xxx.com/repos") {
+//            //    authentication(userName: "admin", password: "admin")
+//            // }
+//
+//            // 本地的Maven地址:当前工程下（../是在seniorlibs-master下）
+//            repository(url: uri("../repository"))
+//        }
+//    }
+//}
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            //提交到远程服务器：
-            // repository(url: "http://www.xxx.com/repos") {
-            //    authentication(userName: "admin", password: "admin")
-            // }
-
-            // 本地的Maven地址:当前工程下（../是在seniorlibs-master下）
-            repository(url: uri("../repository"))
-        }
-    }
-}
-
-//apply from: '../../meven_plugin_push.gradle'
+apply from: '../../meven_plugin_push.gradle'
