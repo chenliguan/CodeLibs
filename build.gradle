@@ -5,11 +5,12 @@ buildscript {
         jcenter()
         google()
 
-//        maven {
+        maven {
             // 添加Maven的本地依赖
 //            url uri('./lib-systrace/repository')
-//            url 'https://dl.bintray.com/xguan/maven'
-//        }
+            // 添加Maven的远程依赖
+            url "https://dl.bintray.com/xguan/maven"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0'
