@@ -23,9 +23,9 @@ public class TraceBuildConstants {
 
     public final static int MAX_SECTION_NAME_LEN = 127;
 
-    public final static String MATRIX_TRACE_METHOD_BEAT_CLASS = "com/sample/systrace/TraceTag";
+    public final static String MATRIX_TRACE_METHOD_BEAT_CLASS = "com/systrace/TraceTag";
     public static final String[] UN_TRACE_CLASS = {"R.class", "R$", "Manifest", "BuildConfig"};
     public final static String DEFAULT_BLACK_TRACE =
                     "[package]\n"
-                    + "-keepclass com/sample/systrace/TraceTag\n";
+                    + "-keepclass com/systrace/TraceTag\n";
 }
