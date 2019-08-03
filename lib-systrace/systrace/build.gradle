@@ -38,4 +38,4 @@ repositories {
 //    }
 //}
 
-apply from: '../../meven_plugin_push.gradle'
+apply from: '../../maven_plugin_push.gradle'
