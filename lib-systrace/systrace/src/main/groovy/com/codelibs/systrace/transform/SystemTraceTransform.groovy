@@ -37,12 +37,12 @@ public class SystemTraceTransform extends BaseProxyTransform {
     public static void inject(Project project, def variant) {
 
         String hackTransformTaskName = getTransformTaskName(
-                 "",
+                "",
                 "",variant.name
         )
 
         String hackTransformTaskNameForWrapper = getTransformTaskName(
-                 "",
+                "",
                 "Builder",variant.name
         )
 
@@ -240,3 +240,4 @@ public class SystemTraceTransform extends BaseProxyTransform {
         return traceConfig
     }
 }
+
