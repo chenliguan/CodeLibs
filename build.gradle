@@ -33,10 +33,10 @@ allprojects {
 
 // 设置全局版本号
 ext {
-    compileSdkVersion = 25
-    buildToolsVersion = "25.0.2"
+    compileSdkVersion = 28
+    buildToolsVersion = "28.0.2"
     minSdkVersion = 15
-    targetSdkVersion = 25
+    targetSdkVersion = 28
 }
 
 task clean(type: Delete) {
