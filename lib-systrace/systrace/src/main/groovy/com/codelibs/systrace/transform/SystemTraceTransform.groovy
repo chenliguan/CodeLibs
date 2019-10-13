@@ -1,6 +1,7 @@
 package com.codelibs.systrace.transform
 
 import com.android.build.api.transform.*
+import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.codelibs.systrace.Log
 import com.codelibs.systrace.Util
@@ -19,7 +20,9 @@ import org.gradle.api.execution.TaskExecutionGraphListener
 import java.lang.reflect.Field
 
 /**
- * Created by guan on 19/7/22.
+ * 在.class文件转换成.dex文件的流程中会执行这个Task，
+ * Transform是在.class文件转换成.dex文件期间，把输入的.class文件（包括第三方库的.class）转变成目标字节码文件的一套API，
+ * 转换的逻辑定义在Transform的transform()方法中。
  */
 public class SystemTraceTransform extends BaseProxyTransform {
 
@@ -34,28 +37,34 @@ public class SystemTraceTransform extends BaseProxyTransform {
         this.project = project
     }
 
+    /**
+     * 注入
+     *
+     * @param project
+     * @param variant
+     */
     public static void inject(Project project, def variant) {
+        // hackTransformTaskName的值为transformClassesWithDexFor[Variant]，(Variant取值为Debug和Release)
+        String hackTransformTaskName = getTransformTaskName("", "",variant.name)
 
-        String hackTransformTaskName = getTransformTaskName(
-                "",
-                "",variant.name
-        )
-
-        String hackTransformTaskNameForWrapper = getTransformTaskName(
-                "",
-                "Builder",variant.name
-        )
+        // hackTransformTaskNameForWrapper的值为transformClassesWithDexBuilderFor[Debug]
+        String hackTransformTaskNameForWrapper = getTransformTaskName("", "Builder",variant.name)
 
         project.logger.info("prepare inject dex transform :" + hackTransformTaskName +" hackTransformTaskNameForWrapper:"+hackTransformTaskNameForWrapper)
 
+        // 定制化的注册Transform的方式（目的是选择合适的时机注入Transform）
         project.getGradle().getTaskGraph().addTaskExecutionGraphListener(new TaskExecutionGraphListener() {
             @Override
             public void graphPopulated(TaskExecutionGraph taskGraph) {
+                // for循环是在TransformTask创建完成且任务图（TaskGraph）构建好了以后回调中执行的
                 for (Task task : taskGraph.getAllTasks()) {
+                    // 通过taskName找到TransformTask
+                    // 条件为：名称为transformClassesWithDexBuilderForDebug/transformClassesWithDexBuilderForRelease的任务，且该任务的transform字段类型不是SystemTraceTransform
                     if ((task.name.equalsIgnoreCase(hackTransformTaskName) || task.name.equalsIgnoreCase(hackTransformTaskNameForWrapper))
                             && !(((TransformTask) task).getTransform() instanceof SystemTraceTransform)) {
                         project.logger.warn("find dex transform. transform class: " + task.transform.getClass() + " . task name: " + task.name)
                         project.logger.info("variant name: " + variant.name)
+                        // 利用反射将TransformTask中的transform字段替换为项目中自定义的SystemTraceTransform，完成了注册。
                         Field field = TransformTask.class.getDeclaredField("transform")
                         field.setAccessible(true)
                         field.set(task, new SystemTraceTransform(project, variant, task.transform))
@@ -65,6 +74,12 @@ public class SystemTraceTransform extends BaseProxyTransform {
                 }
             }
         })
+
+        // 等同于常规方法注册，如下
+//        // app工程->AppPlugin->AppExtension；library工程->LibraryPlugin->LibraryExtension
+//        AppExtension appExtension = project.extensions.findByType(AppExtension.class)
+//        // 常见的注册Transform的方式
+//        appExtension.registerTransform(new SystemTraceTransform(project, variant, task.transform))
     }
 
     @Override
@@ -72,6 +87,14 @@ public class SystemTraceTransform extends BaseProxyTransform {
         return "SystemTraceTransform"
     }
 
+    /**
+     * 转换的逻辑
+     *
+     * @param transformInvocation
+     * @throws TransformException
+     * @throws InterruptedException
+     * @throws IOException
+     */
     @Override
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         long start = System.currentTimeMillis()

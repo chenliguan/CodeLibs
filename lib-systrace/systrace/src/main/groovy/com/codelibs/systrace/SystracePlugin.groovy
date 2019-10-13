@@ -7,7 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
- * Created by guan on 19/7/22.
+ * 在com.codelibs.systrace-plugin.properties中配置的入口
  */
 class SystracePlugin implements Plugin<Project> {
     private static final String TAG = "SystracePlugin"
@@ -20,12 +20,12 @@ class SystracePlugin implements Plugin<Project> {
             throw new GradleException('Systrace Plugin, Android Application plugin required')
         }
 
-        // project配置完成后回调
+        // project的gradle配置执行完成后回调
         project.afterEvaluate {
             def android = project.extensions.android
             def configuration = project.systrace
 
-            // 对于每个APK输出变体遍历
+            // 遍历输出的所有variant变体（每一个variant代表一个应用的不同版本，对应productFlavors下的渠道）
             android.applicationVariants.all { variant ->
 
                 String output = configuration.output
@@ -36,6 +36,8 @@ class SystracePlugin implements Plugin<Project> {
 
                 Log.i(TAG, "Trace enable is %s", configuration.enable)
                 if (configuration.enable) {
+
+                    // 调用SystemTraceTransform的静态方法inject()
                     SystemTraceTransform.inject(project, variant)
                 }
             }
