@@ -40,12 +40,13 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
+ *
+ *
  * Created by caichongyang on 2017/6/4.
  * <p>
  * This class hooks all collected methods in oder to trace method in/out.
  * </p>
  */
-
 public class MethodTracer {
 
     private static final String TAG = "Matrix.MethodTracer";
@@ -309,7 +310,7 @@ public class MethodTracer {
             if (traceMethod != null) {
 
                 traceMethodCount.incrementAndGet();
-                //mv.visitLdcInsn(traceMethod.id);
+                // mv.visitLdcInsn(traceMethod.id);
                 mv.visitMethodInsn(INVOKESTATIC, TraceBuildConstants.MATRIX_TRACE_METHOD_BEAT_CLASS, "o", "()V", false);
             }
         }

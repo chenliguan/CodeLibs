@@ -47,7 +47,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-
+/**
+ * 方法收集工具类
+ */
 public class MethodCollector {
 
     private static final String TAG = "Matrix.MethodCollector";

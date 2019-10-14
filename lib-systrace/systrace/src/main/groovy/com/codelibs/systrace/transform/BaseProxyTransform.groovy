@@ -45,9 +45,24 @@ public abstract class BaseProxyTransform extends Transform {
         }
     }
 
+    /**
+     * 替换修改文件夹
+     *
+     * class
+     * input：D:\acto_track\CodeLibs-master\app\build\systrace_output\classes\SystemTraceTransform\classes
+     * newFile：D:\acto_track\CodeLibs-master\app\build\systrace_output\classes\SystemTraceTransform\classes
+     *
+     * jar
+     * input：D:\acto_track\CodeLibs-master\app\build\systrace_output\classes\SystemTraceTransform\classes_7b714b0cc2b8cacee50b9ce6cf548d3ee9a5b0f2.jar
+     * newFile：D:\acto_track\CodeLibs-master\app\build\systrace_output\classes\SystemTraceTransform\classes_7b714b0cc2b8cacee50b9ce6cf548d3ee9a5b0f2.jar
+     *
+     * @param input
+     * @param newFile
+     */
     protected void replaceFile(QualifiedContent input, File newFile) {
         final Field fileField = ReflectUtil.getDeclaredFieldRecursive(input.getClass(), 'file')
         fileField.set(input, newFile)
+        System.out.println(String.format("[INFO][%s]%s", "input：" + input.getFile() , "  newFile：" + newFile.toPath()))
     }
 
     protected void replaceChangedFile(DirectoryInput dirInput, Map<File, Status> changedFiles) {
