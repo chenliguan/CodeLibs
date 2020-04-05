@@ -40,7 +40,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
- *
+ * 插桩工具类：对收集的所有方法的输入/输出位置插入trace方法
  *
  * Created by caichongyang on 2017/6/4.
  * <p>
@@ -61,12 +61,22 @@ public class MethodTracer {
         this.mCollectedMethodMap = collectedMap;
     }
 
-
+    /**
+     * 插入trace方法
+     *
+     * @param srcFolderList
+     * @param dependencyJarList
+     */
     public void trace(Map<File, File> srcFolderList, Map<File, File> dependencyJarList) {
         traceMethodFromSrc(srcFolderList);
         traceMethodFromJar(dependencyJarList);
     }
 
+    /**
+     * 对目录的所有方法插入trace方法
+     *
+     * @param srcMap
+     */
     private void traceMethodFromSrc(Map<File, File> srcMap) {
         if (null != srcMap) {
             for (Map.Entry<File, File> entry : srcMap.entrySet()) {
@@ -75,6 +85,11 @@ public class MethodTracer {
         }
     }
 
+    /**
+     * 对Jar的所有方法插入trace方法
+     *
+     * @param dependencyMap
+     */
     private void traceMethodFromJar(Map<File, File> dependencyMap) {
         if (null != dependencyMap) {
             for (Map.Entry<File, File> entry : dependencyMap.entrySet()) {
@@ -83,8 +98,13 @@ public class MethodTracer {
         }
     }
 
+    /**
+     * 对目录的每个方法插入trace方法
+     *
+     * @param input
+     * @param output
+     */
     private void innerTraceMethodFromSrc(File input, File output) {
-
         ArrayList<File> classFileList = new ArrayList<>();
         if (input.isDirectory()) {
             listClassFiles(classFileList, input);
@@ -106,14 +126,14 @@ public class MethodTracer {
                 if (mTraceConfig.isNeedTraceClass(classFile.getName())) {
                     is = new FileInputStream(classFile);
 
-                    // 1、处理class文件
-                    // （1）先通过ClassReader读入Class文件的原始字节码
+                    // 1、修改.class文件
+                    // （1）先通过ClassReader解析编译后.class文件的原始字节码并加载类
                     ClassReader classReader = new ClassReader(is);
-                    // （2）使用ClassWriter类基于不同的Visitor类进行修改
+                    // （2）创建ClassWriter类基于不同的Visitor类进行重新修改编译后的类、属性、方法，生成新的类字节码文件
                     ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-                    // （3）用于访问class的工具，在visit()和visitMethod()里对类名和方法名进行判断，需要处理在ClassVisitor类中插入字节码
+                    // （3）ClassVisitor用于访问类成员信息的工具。在visit()和visitMethod()里对类名和方法名进行判断，需要处理在ClassVisitor类中插入字节码
                     ClassVisitor classVisitor = new TraceClassAdapter(Opcodes.ASM5, classWriter);
-                    // （4）按照标志同意修改
+                    // （4）使用自定义的ClassVisitor访问类并进行修改符合特定条件的方法
                     classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
                     is.close();
 
@@ -207,6 +227,9 @@ public class MethodTracer {
         }
     }
 
+    /**
+     * 实现了ClassVisitor，负责访问类成员信息
+     */
     private class TraceClassAdapter extends ClassVisitor {
 
         private String className;
@@ -217,6 +240,16 @@ public class MethodTracer {
             super(i, classVisitor);
         }
 
+        /**
+         * 可以拿到类.class的所有信息，然后对满足条件的类进行过滤（当扫描类时第一个会调用的方法）
+         *
+         * @param version     jdk版本
+         * @param access      类的修饰符：ASM中以ACC_开头，ACC_PUBLIC
+         * @param name        类的名称：使用完整的包名+类名表示，a.b.c.MyClass --> a/b/c/MyClass（不需要.class扩展名）
+         * @param signature   表示泛型信息：未定义，则为空
+         * @param superName   表示当前类所继承的父类
+         * @param interfaces  表示类所实现的接口列表
+         */
         @Override
         public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
             super.visit(version, access, name, signature, superName, interfaces);
@@ -224,12 +257,23 @@ public class MethodTracer {
             if ((access & Opcodes.ACC_ABSTRACT) > 0 || (access & Opcodes.ACC_INTERFACE) > 0) {
                 this.isABSClass = true;
             }
-            // 1、对类名和方法名进行判断
+
+            // （1）对类名和方法名进行判断
             if (mTraceConfig.isMethodBeatClass(className, mCollectedClassExtendMap)) {
                 isMethodBeatClass = true;
             }
         }
 
+        /**
+         * 拿到需要修改的方法的所哟信息，比如：方法名、方法参数描述，然后进行修改操作（当扫描器扫描到类的方法时进行调用）
+         *
+         * @param access      类的修饰符：ASM中以ACC_开头，ACC_PUBLIC
+         * @param name        类的名称：使用完整的包名+类名表示，a.b.c.MyClass --> a/b/c/MyClass（不需要.class扩展名）
+         * @param desc        方法签名：代码-->类型，eg：I-->int,D-->Double,String[]-->[Ljava/lang/String;
+         * @param signature   表示泛型信息：未定义，则为空
+         * @param exceptions  表示抛出的异常
+         * @return
+         */
         @Override
         public MethodVisitor visitMethod(int access, String name, String desc,
                                          String signature, String[] exceptions) {
@@ -238,18 +282,23 @@ public class MethodTracer {
             } else {
                 MethodVisitor methodVisitor = cv.visitMethod(access, name, desc, signature, exceptions);
 
-                // 2、TraceMethodAdapter处理在函数的入口和出口插入字节码
+                // （2）TraceMethodAdapter主要负责访问方法的信息，用来进行具体的方法字节码操作
                 return new TraceMethodAdapter(api, methodVisitor, access, name, desc, this.className, isMethodBeatClass);
             }
         }
 
-
+        /**
+         * 遍历类中成员结束
+         */
         @Override
         public void visitEnd() {
             super.visitEnd();
         }
     }
 
+    /**
+     * 主要负责访问方法的信息，用来进行具体的方法字节码操作
+     */
     private class TraceMethodAdapter extends AdviceAdapter {
 
         private final String methodName;
@@ -268,7 +317,7 @@ public class MethodTracer {
         }
 
         /**
-         * 在函数的入口插入字节码
+         * 进入方法时插入字节码
          */
         @Override
         protected void onMethodEnter() {
@@ -288,14 +337,18 @@ public class MethodTracer {
                     }
                 }
                 mv.visitLdcInsn(sectionName);
+
+                /**
+                 * 方法：com/systrace/TraceTag void i(String name)
+                 * String --> (Ljava/lang/String;)
+                 * V -- > void
+                 */
                 mv.visitMethodInsn(INVOKESTATIC, TraceBuildConstants.MATRIX_TRACE_METHOD_BEAT_CLASS, "i", "(Ljava/lang/String;)V", false);
             }
         }
 
         /**
-         * 在函数的出口插入字节码
-         *
-         * @param opcode
+         * 退出方法前可以插入字节码
          */
         @Override
         protected void onMethodExit(int opcode) {
@@ -306,11 +359,16 @@ public class MethodTracer {
             //    mv.visitLdcInsn(stringBuffer.toString());
             //    mv.visitFieldInsn(Opcodes.PUTSTATIC, className, TraceBuildConstants.MATRIX_TRACE_APPLICATION_CREATE_FILED, "Ljava/lang/String;");
             //}
+
             TraceMethod traceMethod = mCollectedMethodMap.get(methodName);
             if (traceMethod != null) {
-
                 traceMethodCount.incrementAndGet();
+
                 // mv.visitLdcInsn(traceMethod.id);
+                /**
+                 * 方法：com/systrace/TraceTag void o()
+                 * V -- > void
+                 */
                 mv.visitMethodInsn(INVOKESTATIC, TraceBuildConstants.MATRIX_TRACE_METHOD_BEAT_CLASS, "o", "()V", false);
             }
         }

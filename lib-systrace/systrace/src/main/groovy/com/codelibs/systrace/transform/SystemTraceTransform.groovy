@@ -1,7 +1,6 @@
 package com.codelibs.systrace.transform
 
 import com.android.build.api.transform.*
-import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.pipeline.TransformTask
 import com.codelibs.systrace.Log
 import com.codelibs.systrace.Util
@@ -143,14 +142,16 @@ public class SystemTraceTransform extends BaseProxyTransform {
         MethodCollector methodCollector = new MethodCollector(traceConfig, mappingCollector)
         HashMap<String, TraceMethod> collectedMethodMap = methodCollector.collect(scrInputMap.keySet().toList(), jarInputMap.keySet().toList())
         /**
-         * key = methodName ：android.support.v4.app.DialogFragment.onCreate.(Landroid.os.Bundle;)V
-         * value = className：android.support.v4.app.DialogFragment
+         * for(Map.Entry<String, TraceMethod> entry : collectedMethodMap.entrySet()) {
+         *     // key = methodName ：android.support.v4.app.DialogFragment.onCreate.(Landroid.os.Bundle;)V
+         *     // value = className：android.support.v4.app.DialogFragment
+         *     System.out.println("key = methodName :" + entry.getKey() + "value = className：" + entry.getValue().className)
+         * }
          */
-        for(Map.Entry<String, TraceMethod> entry : collectedMethodMap.entrySet()) {
-            System.out.println("key = methodName :" + entry.getKey())
-            System.out.println("value = className：" + entry.getValue().className)
-        }
 
+        /**
+         * 6.对收集的所有方法的输入/输出位置插入trace方法（核心）
+         */
         MethodTracer methodTracer = new MethodTracer(traceConfig, collectedMethodMap, methodCollector.getCollectedClassExtendMap())
         methodTracer.trace(scrInputMap, jarInputMap)
 
