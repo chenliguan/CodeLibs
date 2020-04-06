@@ -1,4 +1,4 @@
-package com.example.rxjava;
+package com.example.rxjava.schedulers;
 
 import java.util.concurrent.Executor;
 
@@ -7,7 +7,8 @@ import java.util.concurrent.Executor;
  * Created by Administrator on 2017/12/30.
  */
 public class Scheduler {
-    //执行线程
+
+    // 执行线程
     private final Executor executor;
 
     public Scheduler(Executor executor) {

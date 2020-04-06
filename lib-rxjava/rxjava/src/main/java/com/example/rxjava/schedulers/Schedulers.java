@@ -1,4 +1,4 @@
-package com.example.rxjava;
+package com.example.rxjava.schedulers;
 
 import java.util.concurrent.Executors;
 
@@ -10,7 +10,7 @@ public class Schedulers {
 
     private volatile static Schedulers current;
 
-    //newSingleThreadExecutor创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，
+    // newSingleThreadExecutor创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，
     private final Scheduler ioScheduler;
     private final Scheduler newThreadScheduler;
 

@@ -3,7 +3,7 @@ package com.example.rxjava.android;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.example.rxjava.Scheduler;
+import com.example.rxjava.schedulers.Scheduler;
 
 import java.util.concurrent.Executors;
 

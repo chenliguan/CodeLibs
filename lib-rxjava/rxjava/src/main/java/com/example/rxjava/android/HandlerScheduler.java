@@ -2,10 +2,9 @@ package com.example.rxjava.android;
 
 import android.os.Handler;
 
-import com.example.rxjava.Scheduler;
+import com.example.rxjava.schedulers.Scheduler;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Handler调度器
