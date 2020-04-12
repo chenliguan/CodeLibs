@@ -28,7 +28,7 @@ public abstract class Observable<T> {
      */
     public static <T> Observable<T> create(ObservableOnSubscribe<T> source) {
         // 创建ObservableCreate对象
-        Log.e(Observable.TAG, "调用create创建ObservableCreate对象");
+        Log.d(Observable.TAG, "调用create创建ObservableCreate对象");
         return new ObservableCreate<T>(source);
     }
 
@@ -41,7 +41,7 @@ public abstract class Observable<T> {
      */
     public <R> Observable<R> map(Function<? super T, ? extends R> func) {
         // 创建一个桥接前一个操作符和当前操作符的Observable子类-ObservableMap对象
-        Log.e(Observable.TAG, "调用map创建ObservableMap对象");
+        Log.d(Observable.TAG, "调用map创建ObservableMap对象");
         return new ObservableMap<>(this, func);
     }
 
@@ -51,6 +51,7 @@ public abstract class Observable<T> {
      * @param observer
      */
     public void subscribe(Observer<? super T> observer) {
+        Log.e(Observable.TAG, "调用订阅subscribe(observer)连接观察者和被观察者，observer：" + observer);
         // 当Observable.subscribe被调用时，回调subscribeActual(observer)
         subscribeActual(observer);
     }

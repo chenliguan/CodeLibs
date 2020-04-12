@@ -29,9 +29,9 @@ public class ObservableMap<T, R> extends Observable<R> {
      */
     @Override
     protected void subscribeActual(Observer<? super R> observer) {
-        Log.e(Observable.TAG, "回调ObservableMap的subscribeActual()，作用:调用前一个操作符返回的Observerable对象的subscribe(observer)");
+        Log.e(Observable.TAG, "回调ObservableMap的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)");
 
-        // 创建一个桥接下层观察者和Map的Function函数对象的Observer子类-MapObserver对象
+        // 创建一个桥接 下层观察者 和 Map-Function函数对象的Observer子类-MapObserver对象
         source.subscribe(new MapObserver<>(observer, function));
     }
 
@@ -54,8 +54,8 @@ public class ObservableMap<T, R> extends Observable<R> {
             // 进行转换和处理，再把结果返回给下层观察者
             T t = null;
             try {
-                Log.e(Observable.TAG, "回调MapObserver的onNext()，进行转换和处理");
-                // 回调map的apply()
+                Log.e(Observable.TAG, "回调MapObserver的onNext()，作用:进行转换和处理后，准备调用map操作符的apply()");
+                // 调用map的apply()
                 t = function.apply(var1);
             } catch (Exception e) {
                 e.printStackTrace();

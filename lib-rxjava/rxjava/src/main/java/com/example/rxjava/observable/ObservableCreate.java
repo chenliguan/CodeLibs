@@ -25,9 +25,12 @@ public class ObservableCreate<T> extends Observable<T> {
      */
     @Override
     protected void subscribeActual(Observer<? super T> observer) {
-        Log.e(Observable.TAG, "回调ObservableCreate的subscribeActual()，作用:调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)");
+        Log.e(Observable.TAG, "回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)");
+
+        Log.e(Observable.TAG, "调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)");
 
         observer.onSubscribe();
+
         source.subscribe(observer);
     }
 }

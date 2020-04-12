@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(Observer<? super Integer> observer) {
-                Log.d(Observable.TAG, "create创建后回调了subscribe()");
+                Log.d(Observable.TAG, "回调create操作符的subscribe()");
                 for (int i = 0; i < 3; i++) {
                     observer.onNext(i);
                 }
@@ -55,13 +55,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /**
-         * RxJavaObservable: 调用create创建ObservableCreate对象
-         * RxJavaObservable: ObservableCreate的subscribeActual，作用:调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
-         * RxJavaObservable: 开始采用subscribe连接
-         * RxJavaObservable: create创建后回调了subscribe()
-         * RxJavaObservable: onNext接收到了事件：0
-         * RxJavaObservable: onNext接收到了事件：1
-         * RxJavaObservable: onNext接收到了事件：2
+         * 调用create创建ObservableCreate对象
+         * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$1@b6c1a61
+         * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
+         * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
+         * 开始采用subscribe连接
+         * 回调create操作符的subscribe()
+         * onNext接收到了事件：0
+         * onNext接收到了事件：1
+         * onNext接收到了事件：2
          */
     }
 
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(Observer<? super Integer> subscriber) {
-                Log.d(Observable.TAG, "create创建后回调了subscribe()，初始值是：" + 10);
+                Log.d(Observable.TAG, "回调create操作符的subscribe()，初始值是：" + 10);
                 subscriber.onNext(10);
             }
 
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public String apply(Integer integer) throws Exception {
                 String str =  "事件" + integer + "的参数从整型：" + integer + "，变换成字符串类型：" + (integer + "s");
-                Log.d(Observable.TAG, "回调map的apply，将" + str);
+                Log.d(Observable.TAG, "回调map操作符的apply()，将" + str);
                 return str;
             }
         }).subscribe(new Observer<String>() {
@@ -106,14 +108,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /**
-         * RxJavaObservable: 调用create创建ObservableCreate对象
-         * RxJavaObservable: 调用map创建ObservableMap对象
-         * RxJavaObservable: 回调ObservableMap的subscribeActual()，作用:调用前一个操作符返回的Observerable对象的subscribe(observer)
-         * RxJavaObservable: 回调ObservableCreate的subscribeActual()，作用:调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
-         * RxJavaObservable: create创建后回调了subscribe()，初始值是：10
-         * RxJavaObservable: 回调MapObserver的onNext()，进行转换和处理
-         * RxJavaObservable: 回调map的apply，将事件10的参数从整型：10，变换成字符串类型：10s
-         * RxJavaObservable: onNext接收到了事件：事件10的参数从整型：10，变换成字符串类型：10s
+         * 调用create创建ObservableCreate对象
+         * 调用map创建ObservableMap对象
+         * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$3@516f986
+         * 回调ObservableMap的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
+         * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableMap$MapObserver@e734247
+         * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
+         * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
+         * 回调create操作符的subscribe()，初始值是：10
+         * 回调MapObserver的onNext()，作用:进行转换和处理后，准备调用map操作符的apply()
+         * 回调map操作符的apply()，将事件10的参数从整型：10，变换成字符串类型：10s
+         * onNext接收到了事件：事件10的参数从整型：10，变换成字符串类型：10s
          */
     }
 
