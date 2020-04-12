@@ -27,7 +27,7 @@ public class ObservableCreate<T> extends Observable<T> {
     protected void subscribeActual(Observer<? super T> observer) {
         Log.e(Observable.TAG, "回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)");
 
-        Log.e(Observable.TAG, "调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：" + Thread.currentThread().getName());
+        Log.d(Observable.TAG, "调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：" + Thread.currentThread().getName());
 
         observer.onSubscribe();
 

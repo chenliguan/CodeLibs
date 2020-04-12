@@ -1,13 +1,11 @@
 package com.example.rxjava.observable;
 
 import android.util.Log;
-
-import com.example.rxjava.functions.Function;
 import com.example.rxjava.observer.Observer;
 import com.example.rxjava.schedulers.Scheduler;
 
 /**
- * 订阅源-SubscribeOn操作符：线程切换
+ * 订阅源-subscribeOn操作符：切换Observerable对象执行线程
  * Created by Administrator on 2020/4/12.
  */
 public class ObservableSubscribeOn<T> extends Observable<T> {
@@ -49,7 +47,7 @@ public class ObservableSubscribeOn<T> extends Observable<T> {
         @Override
         public void run() {
             // 让前一个操作符返回的Observerable对象的subscribe()在新线程中执行
-            Log.e(Observable.TAG, "调用前一个操作符返回的Observerable对象的subscribe(observer)，让前一个操作符返回的Observerable对象的subscribe()在新线程中执行，当前线程是：" + Thread.currentThread().getName());
+            Log.d(Observable.TAG, "调用前一个操作符返回的Observerable对象的subscribe(observer)，让它的subscribe()在新线程中执行，当前线程是：" + Thread.currentThread().getName());
             source.subscribe(observer);
         }
     }

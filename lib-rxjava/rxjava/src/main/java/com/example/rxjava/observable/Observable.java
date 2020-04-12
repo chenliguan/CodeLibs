@@ -52,9 +52,21 @@ public abstract class Observable<T> {
      * @return
      */
     public Observable<T> subscribeOn(final Scheduler scheduler) {
-        // 创建一个桥接前一个操作符和当前操作符的Observable子类-ObservableMap对象
+        // 创建一个桥接前一个操作符和当前操作符的Observable子类-ObservableSubscribeOn对象
         Log.d(Observable.TAG, "调用subscribeOn创建ObservableSubscribeOn对象");
         return new ObservableSubscribeOn<>(this, scheduler);
+    }
+
+    /**
+     * observeOn()作用的是Subscriber
+     *
+     * @param scheduler
+     * @return
+     */
+    public Observable<T> observeOn(final Scheduler scheduler) {
+        // 创建一个桥接前一个操作符和当前操作符的Observable子类-ObservableObserveOn
+        Log.d(Observable.TAG, "调用observeOn创建ObservableObserveOn对象");
+        return new ObservableObserveOn<>(this, scheduler);
     }
 
     /**
@@ -68,55 +80,4 @@ public abstract class Observable<T> {
         subscribeActual(observer);
     }
 
-    /**
-     * observeOn()作用的是Subscriber
-     *
-     * @param scheduler
-     * @return
-     */
-    public Observable<T> observeOn(final Scheduler scheduler) {
-        return Observable.create(new ObservableOnSubscribe<T>() {
-
-            @Override
-            public void subscribe(final Observer<? super T> observer) {
-                final Scheduler.Worker worker = scheduler.createWorker();
-                Observable.this.subscribe(new Observer<T>() {
-                    @Override
-                    public void onSubscribe() {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        worker.schedule(new Runnable() {
-                            @Override
-                            public void run() {
-                                observer.onComplete();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final Throwable t) {
-                        worker.schedule(new Runnable() {
-                            @Override
-                            public void run() {
-                                observer.onError(t);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onNext(final T var1) {
-                        worker.schedule(new Runnable() {
-                            @Override
-                            public void run() {
-                                observer.onNext(var1);
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }
 }
