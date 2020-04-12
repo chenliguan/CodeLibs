@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         }).map(new Function<Integer, String>() {
             @Override
             public String apply(Integer integer) throws Exception {
-                String str =  "事件" + integer + "的参数从整型：" + integer + "，变换成字符串类型：" + (integer + "s");
+                String str = "事件" + integer + "的参数从整型：" + integer + "，变换成字符串类型：" + (integer + "s");
                 Log.d(Observable.TAG, "回调map操作符的apply()，将" + str);
                 return str;
             }
@@ -125,35 +125,30 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 线程切换
      * <p>
-     * subscribeOn()作用的是OnSubscribe
-     * observeOn()作用的是Subscriber
+     * subscribeOn()作用的是Observable
+     * observeOn()作用的是Observer
      */
     public void subscribeOn(View view) {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(Observer<? super Integer> subscriber) {
-                Log.d(Observable.TAG, "create创建后回调了subscribe() + 初始线程是："+ Thread.currentThread().getName());
+                Log.d(Observable.TAG, "回调create操作符的subscribe()，Observable执行的线程是：" + Thread.currentThread().getName());
 
                 subscriber.onNext(1);
             }
-        }).map(new Function<Integer, String>() {
-            @Override
-            public String apply(Integer from) {
-                Log.d(Observable.TAG, "map后回调了apply() + 线程是："+ Thread.currentThread().getName());
-                return "1";
-            }
         })
                 .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
+                .subscribe(new Observer<Integer>() {
                     @Override
                     public void onSubscribe() {
                         Log.d(Observable.TAG, "开始采用subscribe连接");
                     }
 
                     @Override
-                    public void onNext(String value) {
-                        Log.d(Observable.TAG, "onNext接收到了事件：" + value + " + 线程是："+ Thread.currentThread().getName());
+                    public void onNext(Integer value) {
+                        Log.d(Observable.TAG, "onNext接收到了事件：" + value + "， Observer执行的线程是：" + Thread.currentThread().getName());
                     }
 
                     @Override

@@ -46,41 +46,31 @@ public abstract class Observable<T> {
     }
 
     /**
-     * 通过订阅（subscribe）连接观察者和被观察者
-     *
-     * @param observer
-     */
-    public void subscribe(Observer<? super T> observer) {
-        Log.e(Observable.TAG, "调用订阅subscribe(observer)连接观察者和被观察者，observer：" + observer);
-        // 当Observable.subscribe被调用时，回调subscribeActual(observer)
-        subscribeActual(observer);
-    }
-
-    /**
      * subscribeOn()操作符，作用的是OnSubscribe
      *
      * @param scheduler
      * @return
      */
     public Observable<T> subscribeOn(final Scheduler scheduler) {
-        return Observable.create(new ObservableOnSubscribe<T>() {
-            @Override
-            public void subscribe(final Observer<? super T> subscriber) {
-                subscriber.onSubscribe();
-                // 将事件切换到新的线程
-                scheduler.createWorker().schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 让OnSubscribe的call方法在新线程中执行
-                        Observable.this.subscribe(subscriber);
-                    }
-                });
-            }
-        });
+        // 创建一个桥接前一个操作符和当前操作符的Observable子类-ObservableMap对象
+        Log.d(Observable.TAG, "调用subscribeOn创建ObservableSubscribeOn对象");
+        return new ObservableSubscribeOn<>(this, scheduler);
+    }
+
+    /**
+     * 通过订阅（subscribe）连接观察者和被观察者
+     *
+     * @param observer
+     */
+    public void subscribe(Observer<? super T> observer) {
+        Log.d(Observable.TAG, "调用订阅subscribe(observer)连接观察者和被观察者，observer：" + observer);
+        // 当Observable.subscribe被调用时，回调subscribeActual(observer)
+        subscribeActual(observer);
     }
 
     /**
      * observeOn()作用的是Subscriber
+     *
      * @param scheduler
      * @return
      */

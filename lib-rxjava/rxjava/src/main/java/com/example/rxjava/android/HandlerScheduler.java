@@ -7,7 +7,7 @@ import com.example.rxjava.schedulers.Scheduler;
 import java.util.concurrent.Executor;
 
 /**
- * Handler调度器
+ * Android线程调度器
  * Created by Administrator on 2017/12/31 0031.
  */
 public final class HandlerScheduler extends Scheduler {
@@ -21,14 +21,14 @@ public final class HandlerScheduler extends Scheduler {
     }
 
     public Worker createWorker() {
-        return new HandlerScheduler.HandlerWorker(executor,handler);
+        return new HandlerScheduler.HandlerWorker(executor, handler);
     }
 
     private class HandlerWorker extends Worker {
 
         private final Handler handler;
 
-        private HandlerWorker(Executor executor,Handler handler) {
+        private HandlerWorker(Executor executor, Handler handler) {
             super(executor);
             this.handler = handler;
         }
