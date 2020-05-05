@@ -14,7 +14,7 @@ public class ObservableObserveOn<T> extends Observable<T> {
     private final Observable<T> source;
     private final Scheduler scheduler;
 
-    // 传入的source对象 = 前一个操作符返回的Observerable对象（Observable<T> implements ObservableSource<T>）
+    // 传入的source对象 = 前一个操作符返回的Observable对象（Observable<T> implements ObservableSource<T>）
     // 传入的scheduler对象 = SubscribeOn变换操作符中的scheduler对象
     public ObservableObserveOn(Observable<T> source, Scheduler scheduler) {
         this.source = source;
@@ -23,15 +23,15 @@ public class ObservableObserveOn<T> extends Observable<T> {
 
     /**
      * 关注：当Observable.subscribe被调用时，subscribeActual(observer)被立刻回调
-     * 作用：调用前一个操作符返回的Observerable对象的subscribe(observer)
+     * 作用：调用前一个操作符返回的Observable对象的subscribe(observer)
      *
      * @param observer
      */
     @Override
     protected void subscribeActual(Observer<? super T> observer) {
-        Log.e(Observable.TAG, "回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)");
+        Log.e(Observable.TAG, "回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)");
 
-        // 创建一个桥接 下层观察者 和 前一个操作符返回的Observerable对象 的 Observer子类-ObserveOnObserver对象
+        // 创建一个桥接 下层观察者 和 前一个操作符返回的Observable对象 的 Observer子类-ObserveOnObserver对象
         Scheduler.Worker worker = scheduler.createWorker();
         source.subscribe(new ObserveOnObserver<T>(observer, worker));
     }

@@ -73,9 +73,9 @@ public class MainActivity extends AppCompatActivity {
     public void map(View view) {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
-            public void subscribe(Observer<? super Integer> subscriber) {
+            public void subscribe(Observer<? super Integer> observer) {
                 Log.d(Observable.TAG, "回调create操作符的subscribe()，初始值是：" + 10);
-                subscriber.onNext(10);
+                observer.onNext(10);
             }
 
         }).map(new Function<Integer, String>() {
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
          * 调用create创建ObservableCreate对象
          * 调用map创建ObservableMap对象
          * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$3@516f986
-         * 回调ObservableMap的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
+         * 回调ObservableMap的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
          * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableMap$MapObserver@e734247
          * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
          * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
@@ -131,10 +131,10 @@ public class MainActivity extends AppCompatActivity {
     public void subscribeOn(View view) {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
-            public void subscribe(Observer<? super Integer> subscriber) {
+            public void subscribe(Observer<? super Integer> observer) {
                 Log.d(Observable.TAG, "回调create操作符的subscribe()，Observable执行的线程是：" + Thread.currentThread().getName());
 
-                subscriber.onNext(1);
+                observer.onNext(1);
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -168,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
      * 调用create创建ObservableCreate对象
      * 调用subscribeOn创建ObservableSubscribeOn对象
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$6@b6c1a61
-     * 回调ObservableSubscribeOn的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
-     * 调用前一个操作符返回的Observerable对象的subscribe(observer)，让它的subscribe()在新线程中执行，当前线程是：pool-1-thread-1
+     * 回调ObservableSubscribeOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
+     * 调用前一个操作符返回的Observable对象的subscribe(observer)，让它的subscribe()在新线程中执行，当前线程是：pool-1-thread-1
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$6@b6c1a61
      * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
      * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：pool-1-thread-1
@@ -186,10 +186,10 @@ public class MainActivity extends AppCompatActivity {
      * 调用subscribeOn创建ObservableSubscribeOn对象
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$6@b6c1a61
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$6@b6c1a61
-     * 回调ObservableSubscribeOn的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
-     * 调用前一个操作符返回的Observerable对象的subscribe(observer)，让它的subscribe()在新线程中执行，当前线程是：main
-     * 回调ObservableSubscribeOn的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
-     * 调用前一个操作符返回的Observerable对象的subscribe(observer)，让它的subscribe()在新线程中执行，当前线程是：pool-1-thread-1
+     * 回调ObservableSubscribeOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
+     * 调用前一个操作符返回的Observable对象的subscribe(observer)，让它的subscribe()在新线程中执行，当前线程是：main
+     * 回调ObservableSubscribeOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
+     * 调用前一个操作符返回的Observable对象的subscribe(observer)，让它的subscribe()在新线程中执行，当前线程是：pool-1-thread-1
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$6@b6c1a61
      * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
      * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：pool-1-thread-1
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
      * 调用create创建ObservableCreate对象
      * 调用observeOn创建ObservableObserveOn对象
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$6@b6c1a61
-     * 回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
+     * 回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableObserveOn$ObserveOnObserver@516f986
      * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
      * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：main
@@ -220,10 +220,10 @@ public class MainActivity extends AppCompatActivity {
      * 调用subscribeOn创建ObservableSubscribeOn对象
      * 调用observeOn创建ObservableObserveOn对象
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$6@997bbe3
-     * 回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
+     * 回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableObserveOn$ObserveOnObserver@56c59e0
-     * 回调ObservableSubscribeOn的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
-     * 调用前一个操作符返回的Observerable对象的subscribe(observer)，让它的subscribe()在新线程中执行，当前线程是：pool-1-thread-1
+     * 回调ObservableSubscribeOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
+     * 调用前一个操作符返回的Observable对象的subscribe(observer)，让它的subscribe()在新线程中执行，当前线程是：pool-1-thread-1
      * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableObserveOn$ObserveOnObserver@56c59e0
      * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
      * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：pool-1-thread-1
@@ -241,10 +241,10 @@ public class MainActivity extends AppCompatActivity {
     public void subscribeMapOn(View view) {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
-            public void subscribe(Observer<? super Integer> subscriber) {
+            public void subscribe(Observer<? super Integer> observer) {
                 Log.d(Observable.TAG, "回调create操作符的subscribe()，Observable执行的线程是：" + Thread.currentThread().getName());
 
-                subscriber.onNext(1);
+                observer.onNext(1);
             }
         })
 //                .subscribeOn(Schedulers.io())
@@ -292,11 +292,11 @@ public class MainActivity extends AppCompatActivity {
          * 调用map创建ObservableMap对象
          * 调用observeOn创建ObservableObserveOn对象
          * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$9@997bbe3
-         * 回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
+         * 回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
          * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableObserveOn$ObserveOnObserver@56c59e0
-         * 回调ObservableMap的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
+         * 回调ObservableMap的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
          * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableMap$MapObserver@5c4b499
-         * 回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)
+         * 回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
          * 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableObserveOn$ObserveOnObserver@b1db35e
          * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
          * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：main

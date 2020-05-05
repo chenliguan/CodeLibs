@@ -14,7 +14,7 @@ public class ObservableMap<T, R> extends Observable<R> {
     private final Observable<T> source;
     private final Function<? super T, ? extends R> function;
 
-    // 传入的source对象 = 前一个操作符返回的Observerable对象（Observable<T> implements ObservableSource<T>）
+    // 传入的source对象 = 前一个操作符返回的Observable对象（Observable<T> implements ObservableSource<T>）
     // 传入的function对象 = Map变换操作符中的Function函数对象
     public ObservableMap(Observable<T> source, Function<? super T, ? extends R> function) {
         this.source = source;
@@ -23,13 +23,13 @@ public class ObservableMap<T, R> extends Observable<R> {
 
     /**
      * 关注：当Observable.subscribe被调用时，subscribeActual(observer)被立刻回调
-     * 作用：调用前一个操作符返回的Observerable对象的subscribe(observer)
+     * 作用：调用前一个操作符返回的Observable对象的subscribe(observer)
      *
      * @param observer
      */
     @Override
     protected void subscribeActual(Observer<? super R> observer) {
-        Log.e(Observable.TAG, "回调ObservableMap的subscribeActual()，作用:准备调用前一个操作符返回的Observerable对象的subscribe(observer)");
+        Log.e(Observable.TAG, "回调ObservableMap的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)");
 
         // 创建一个桥接 下层观察者 和 Map-Function函数对象 的 Observer子类-MapObserver对象
         source.subscribe(new MapObserver<>(observer, function));
