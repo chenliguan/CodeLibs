@@ -1,11 +1,13 @@
 package com.example.rxjava_example;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import com.example.rxjava.functions.Function;
+import com.example.rxjava.functions.Function2;
 import com.example.rxjava.observable.Observable;
 import com.example.rxjava.observable.ObservableOnSubscribe;
 import com.example.rxjava.observer.Observer;
@@ -209,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
      * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
      * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：main
      * 回调create操作符的subscribe()，Observable执行的线程是：main
-     * 回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下层观察者的onNext()，当前线程是：main
+     * 回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下游观察者的onNext()，当前线程是：main
      * onNext接收到了事件：1， Observer执行的线程是：main
      */
 
@@ -228,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
      * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
      * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：pool-1-thread-1
      * 回调create操作符的subscribe()，Observable执行的线程是：pool-1-thread-1
-     * 回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下层观察者的onNext()，当前线程是：main
+     * 回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下游观察者的onNext()，当前线程是：main
      * onNext接收到了事件：1， Observer执行的线程是：main
      */
 
@@ -301,11 +303,104 @@ public class MainActivity extends AppCompatActivity {
          * 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
          * 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：main
          * 回调create操作符的subscribe()，Observable执行的线程是：main
-         * 回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下层观察者的onNext()，当前线程是：pool-1-thread-1
+         * 回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下游观察者的onNext()，当前线程是：pool-1-thread-1
          * 回调MapObserver的onNext()，作用:进行转换和处理后，准备调用map操作符的apply()
          * 回调map操作符的apply()，将事件1的参数从：1，变换成字符串类型：101，当前线程是：pool-1-thread-1
-         * 回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下层观察者的onNext()，当前线程是：main
+         * 回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下游观察者的onNext()，当前线程是：main
          * onNext接收到了事件：101， Observer执行的线程是：main
+         */
+    }
+
+    /**
+     * zip
+     * <p>
+     */
+    public void zip(View view) {
+        Observable observable1 = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(Observer<? super String> emitter) {
+                Log.d(Observable.TAG, "回调observable1的subscribe()");
+                emitter.onNext("11");
+                emitter.onNext("12");
+                emitter.onNext("13");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Observable observable2 = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(Observer<? super String> emitter) {
+                Log.d(Observable.TAG, "回调observable2的subscribe()");
+                emitter.onNext("21");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                emitter.onNext("22");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                emitter.onNext("23");
+            }
+        });
+        Observable.zip(observable1, observable2, new Function2<String, String, String>() {
+            @Override
+            public String apply(@NonNull String str1, @NonNull String str2) throws Exception {
+                Log.d(Observable.TAG, "回调zip操作符的apply()，将str1：" + str1 + " " + "str2：" + str2);
+                return str1 + str2;
+            }
+        }).subscribe(new Observer<String>() {
+            @Override
+            public void onSubscribe() {
+                Log.d(Observable.TAG, "开始采用subscribe连接");
+            }
+
+            @Override
+            public void onNext(String value) {
+                Log.d(Observable.TAG, "onNext接收到了事件：" + value);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(Observable.TAG, "对Error事件作出响应");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d(Observable.TAG, "对Complete事件作出响应");
+            }
+        });
+
+        /**
+         * 2020-05-17 17:41:58 调用create创建ObservableCreate对象
+         * 2020-05-17 17:41:58 调用create创建ObservableCreate对象
+         * 2020-05-17 17:41:58 调用zip创建ObservableZip对象
+         * 2020-05-17 17:41:58 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava_example.MainActivity$13@eb234b2
+         * 2020-05-17 17:41:58 回调ObservableZip的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)
+         * 2020-05-17 17:41:58 开始采用subscribe连接
+         * 2020-05-17 17:41:58 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableZip$ZipObserver@19adc03
+         * 2020-05-17 17:41:58 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
+         * 2020-05-17 17:41:58 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：main
+         * 2020-05-17 17:41:58 回调observable1的subscribe()
+         * 2020-05-17 17:42:00 调用订阅subscribe(observer)连接观察者和被观察者，observer：com.example.rxjava.observable.ObservableZip$ZipObserver@b4ac780
+         * 2020-05-17 17:42:00 回调ObservableCreate的subscribeActual()，作用:准备调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)
+         * 2020-05-17 17:42:00 调用source对象（即ObservableOnSubscribe对象）的subscribe(observer)，当前线程是：main
+         * 2020-05-17 17:42:00 回调observable2的subscribe()
+         * 2020-05-17 17:42:00 调用zip的apply()进行转换和处理
+         * 2020-05-17 17:42:00 回调zip操作符的apply()，将str1：11 str2：21
+         * 2020-05-17 17:42:00 onNext接收到了事件：1121
+         * 2020-05-17 17:42:02 调用zip的apply()进行转换和处理
+         * 2020-05-17 17:42:02 回调zip操作符的apply()，将str1：12 str2：22
+         * 2020-05-17 17:42:02 onNext接收到了事件：1222
+         * 2020-05-17 17:42:05 调用zip的apply()进行转换和处理
+         * 2020-05-17 17:42:05 回调zip操作符的apply()，将str1：13 str2：23
+         * 2020-05-17 17:42:05 onNext接收到了事件：1323
          */
     }
 }

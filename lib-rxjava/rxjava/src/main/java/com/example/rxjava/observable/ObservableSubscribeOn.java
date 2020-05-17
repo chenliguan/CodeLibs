@@ -30,7 +30,7 @@ public class ObservableSubscribeOn<T> extends Observable<T> {
     protected void subscribeActual(Observer<? super T> observer) {
         Log.e(Observable.TAG, "回调ObservableSubscribeOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)");
 
-        // 创建一个桥接 下层观察者 和 前一个操作符返回的Observable对象 的 线程切换任务Runnable对象
+        // 创建一个桥接 下游观察者 和 前一个操作符返回的Observable对象 的 线程切换任务Runnable对象
         scheduler.scheduleDirect(new SubscribeTask(observer));
     }
 

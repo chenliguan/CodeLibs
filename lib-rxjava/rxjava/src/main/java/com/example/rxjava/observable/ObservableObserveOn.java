@@ -31,7 +31,7 @@ public class ObservableObserveOn<T> extends Observable<T> {
     protected void subscribeActual(Observer<? super T> observer) {
         Log.e(Observable.TAG, "回调ObservableObserveOn的subscribeActual()，作用:准备调用前一个操作符返回的Observable对象的subscribe(observer)");
 
-        // 创建一个桥接 下层观察者 和 前一个操作符返回的Observable对象 的 Observer子类-ObserveOnObserver对象
+        // 创建一个桥接 下游观察者 和 前一个操作符返回的Observable对象 的 Observer子类-ObserveOnObserver对象
         Scheduler.Worker worker = scheduler.createWorker();
         source.subscribe(new ObserveOnObserver<T>(observer, worker));
     }
@@ -52,13 +52,13 @@ public class ObservableObserveOn<T> extends Observable<T> {
 
         @Override
         public void onNext(final T var1) {
-            // 进行线程切换，再把结果返回给下层观察者
+            // 进行线程切换，再把结果返回给下游观察者
             worker.schedule(new Runnable() {
                 @Override
                 public void run() {
-                    // 让下层观察者的Observer对象在新线程中执行
-                    Log.e(Observable.TAG, "回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下层观察者的onNext()，当前线程是：" + Thread.currentThread().getName());
-                    // 调用下层观察者的onNext()
+                    // 让下游观察者的Observer对象在新线程中执行
+                    Log.e(Observable.TAG, "回调ObserveOnObserver的onNext()，作用:进行线程切换，准备调用下游观察者的onNext()，当前线程是：" + Thread.currentThread().getName());
+                    // 调用下游观察者的onNext()
                     observer.onNext(var1);
                 }
             });

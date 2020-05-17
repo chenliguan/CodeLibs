@@ -33,4 +33,11 @@
         android:onClick="subscribeMapOn"
         android:text="subscribeMapOn()"
         android:textAllCaps="false" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="zip"
+        android:text="zip()"
+        android:textAllCaps="false" />
 </LinearLayout>

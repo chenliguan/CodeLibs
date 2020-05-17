@@ -3,6 +3,8 @@ package com.example.rxjava.observable;
 import android.util.Log;
 
 import com.example.rxjava.functions.Function;
+import com.example.rxjava.functions.Function2;
+import com.example.rxjava.functions.Functions;
 import com.example.rxjava.observer.Observer;
 import com.example.rxjava.schedulers.Scheduler;
 
@@ -80,4 +82,26 @@ public abstract class Observable<T> {
         subscribeActual(observer);
     }
 
+    /**
+     * zip 操作符
+     *
+     * @param source1
+     * @param source2
+     * @param source1
+     * @param <R>
+     * @return
+     */
+    public static <T1, T2, R> Observable<R> zip(
+            Observable<? extends T1> source1,
+            Observable<? extends T2> source2,
+            Function2<? super T1, ? super T2, ? extends R> function2) {
+        // 创建一个桥接前一个操作符和当前操作符的Observable子类-ObservableZip对象
+        Log.d(Observable.TAG, "调用zip创建ObservableZip对象");
+        return zipArray(Functions.toFunction(function2),source1, source2);
+    }
+
+    private static <T, R> Observable<R> zipArray(Function<? super Object[], ? extends R> function,
+                                                 Observable<? extends T>... sources) {
+        return new ObservableZip<T, R>(sources, function);
+    }
 }
