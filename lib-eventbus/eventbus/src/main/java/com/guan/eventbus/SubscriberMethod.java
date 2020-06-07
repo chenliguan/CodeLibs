@@ -24,10 +24,15 @@ public class SubscriberMethod {
      * 方法中的参数
      */
     public Class<?> eventType;
+    /**
+     * 是否是粘滞事件
+     */
+    public final boolean sticky;
 
-    public SubscriberMethod(Method method, ThreadMode threadMode, Class<?> eventType) {
+    public SubscriberMethod(Method method, ThreadMode threadMode, Class<?> eventType, boolean sticky) {
         this.method = method;
         this.threadMode = threadMode;
         this.eventType = eventType;
+        this.sticky = sticky;
     }
 }

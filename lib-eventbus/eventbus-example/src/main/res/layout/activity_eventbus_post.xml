@@ -5,16 +5,57 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/postInThread"
+        android:id="@+id/btn_post_in_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="postInThread"
-        android:text="在子线程中发布事件" />
+        android:layout_marginTop="10dp"
+        android:onClick="postInMain"
+        android:text="在主线程中发布事件"
+        android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/postInMain"
+        android:id="@+id/btn_post_in_thread"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="postInMain"
-        android:text="在主线程中发布事件" />
+        android:layout_marginTop="10dp"
+        android:onClick="postInThread"
+        android:text="在子线程中发布事件"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_post_sticky"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:onClick="postSticky"
+        android:text="postSticky"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_remove_sticky_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:onClick="removeStickyEvent"
+        android:text="removeStickyEvent"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:onClick="register"
+        android:text="register"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_un_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:onClick="unRegister"
+        android:text="unRegister"
+        android:textAllCaps="false" />
+
 </LinearLayout>

@@ -1,9 +1,7 @@
 package com.guan.eventbus;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.ExpandableListView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,10 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 
 /**
  * Author: 陈李冠
@@ -47,9 +45,9 @@ public class EventBus {
      */
     private final Map<Object, List<Class<?>>> typesBySubscriber;
     /**
-     * Looper为MainLooper
+     * 接收粘滞事件订阅者存储在这个列表中
      */
-    private Handler handler;
+    private final Map<Class<?>, Object> stickyEvents;
 
     private EventBus() {
         this.mainThreadSupport = new MainThreadSupport.AndroidHandlerMainThreadSupport(Looper.getMainLooper());;
@@ -57,7 +55,7 @@ public class EventBus {
         this.backgroundPoster = new BackgroundPoster(this);
         this.subscriptionsByEventType = new HashMap<>();
         this.typesBySubscriber = new HashMap<>();
-        this.handler = new Handler(Looper.getMainLooper());
+        this.stickyEvents = new ConcurrentHashMap<>();
     }
 
     /**
@@ -83,7 +81,7 @@ public class EventBus {
         List<Subscription> subscriptions = findSubscriberMethods(subscriber);
         synchronized (this) {
             for (Subscription subscription : subscriptions) {
-                subscribe(subscriber, subscription);
+                subscribe(subscriber, subscription.subscriberMethod);
             }
         }
     }
@@ -92,10 +90,11 @@ public class EventBus {
      * 订阅：Must be called in synchronized block
      *
      * @param subscriber
-     * @param subscription
+     * @param subscriberMethod
      */
-    private void subscribe(Object subscriber, Subscription subscription) {
-        Class<?> eventType = subscription.subscriberMethod.eventType;
+    private void subscribe(Object subscriber, SubscriberMethod subscriberMethod) {
+        Class<?> eventType = subscriberMethod.eventType;
+        Subscription newSubscription = new Subscription(subscriber, subscriberMethod);
         CopyOnWriteArrayList<Subscription> subscriptions = subscriptionsByEventType.get(subscriber);
         if (subscriptions == null) {
             subscriptions = findSubscriberMethods(subscriber);
@@ -108,6 +107,15 @@ public class EventBus {
             typesBySubscriber.put(subscriber, subscribedEvents);
         }
         subscribedEvents.add(eventType);
+
+        // 如果是粘滞事件
+        if (subscriberMethod.sticky) {
+            Object stickyEvent = stickyEvents.get(eventType);
+            if (stickyEvent != null) {
+                // 如果订阅者试图中止事件，它将失败(在发布状态中不跟踪事件)
+                postToSubscription(newSubscription, stickyEvent, isMainThread());
+            }
+        }
     }
 
     /**
@@ -132,8 +140,8 @@ public class EventBus {
 
             for (Method method : methods) {
                 // 找到被SubScribe注解订阅的方法
-                Subscribe subscribe = method.getAnnotation(Subscribe.class);
-                if (subscribe == null) {
+                Subscribe subscribeAnnotation = method.getAnnotation(Subscribe.class);
+                if (subscribeAnnotation == null) {
                     continue;
                 }
                 // 判断带有Subscribe注解方法中的参数类型
@@ -143,8 +151,8 @@ public class EventBus {
                     continue;
                 }
 
-                ThreadMode threadMode = subscribe.threadMode();
-                SubscriberMethod subscriberMethod = new SubscriberMethod(method, threadMode, types[0]);
+                ThreadMode threadMode = subscribeAnnotation.threadMode();
+                SubscriberMethod subscriberMethod = new SubscriberMethod(method, threadMode, types[0], subscribeAnnotation.sticky());
                 Subscription newSubscription = new Subscription(subscriber, subscriberMethod);
                 subscriptions.add(newSubscription);
             }
@@ -175,7 +183,7 @@ public class EventBus {
 
             // 遍历此订阅者+订阅者类的方法对象的所有方法
             for (final Subscription subscription : subscriptions) {
-                // eventType对象所对应的类信息是不是event.getClass()对象所对应的类信息的父类或接口
+                // 类Class1所对应的类信息是不是Class2所对应的类信息的父类或接口，或类Class1和Class2是否相同
                 if (subscription.subscriberMethod.eventType.isAssignableFrom(event.getClass())) {
 
                     postToSubscription(subscription, event, isMainThread());
@@ -221,6 +229,67 @@ public class EventBus {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Unexpected exception", e);
+        }
+    }
+
+    /**
+     * 将给定事件发布到事件总线并持有该事件(因为它具有粘性)。事件类型的最新粘贴事件保存在内存中，
+     * 供订阅者使用{@link Subscribe#sticky()}将来访问。
+     */
+    public void postSticky(Object event) {
+        synchronized (stickyEvents) {
+            stickyEvents.put(event.getClass(), event);
+        }
+        // 是否应在发布后发布，以防订阅者想立即删除
+        post(event);
+    }
+
+    /**
+     * 获取给定类型的最新粘贴事件
+     *
+     * @see #postSticky(Object)
+     */
+    public <T> T getStickyEvent(Class<T> eventType) {
+        synchronized (stickyEvents) {
+            return eventType.cast(stickyEvents.get(eventType));
+        }
+    }
+
+    /**
+     * 删除并获取给定事件类型的最近粘贴事件
+     *
+     * @see #postSticky(Object)
+     */
+    public <T> T removeStickyEvent(Class<T> eventType) {
+        synchronized (stickyEvents) {
+            return eventType.cast(stickyEvents.remove(eventType));
+        }
+    }
+
+    /**
+     * 删除与给定事件相等的粘滞事件
+     *
+     * @return true 如果事件匹配并且粘性事件被删除
+     */
+    public boolean removeStickyEvent(Object event) {
+        synchronized (stickyEvents) {
+            Class<?> eventType = event.getClass();
+            Object existingEvent = stickyEvents.get(eventType);
+            if (event.equals(existingEvent)) {
+                stickyEvents.remove(eventType);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * 删除所有粘滞事件
+     */
+    public void removeAllStickyEvents() {
+        synchronized (stickyEvents) {
+            stickyEvents.clear();
         }
     }
 

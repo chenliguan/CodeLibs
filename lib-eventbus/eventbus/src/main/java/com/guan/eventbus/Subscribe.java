@@ -18,4 +18,11 @@ import java.lang.annotation.Target;
 public @interface Subscribe {
 
     ThreadMode threadMode() default ThreadMode.POSTING;
+
+    /**
+     * If true, delivers the most recent sticky event (posted with
+     * {@link EventBus#postSticky(Object)}) to this subscriber (if event available).
+     */
+    boolean sticky() default false;
+
 }
