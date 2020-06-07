@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.guan.eventbus.EventBus;
-import com.guan.eventbus.MessageEvent;
 import com.guan.eventbus.Subscribe;
 import com.guan.eventbus.ThreadMode;
 

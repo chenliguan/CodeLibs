@@ -20,9 +20,7 @@ public @interface Subscribe {
     ThreadMode threadMode() default ThreadMode.POSTING;
 
     /**
-     * If true, delivers the most recent sticky event (posted with
-     * {@link EventBus#postSticky(Object)}) to this subscriber (if event available).
+     * 如果为true，则post最近的粘滞事件
      */
     boolean sticky() default false;
-
 }

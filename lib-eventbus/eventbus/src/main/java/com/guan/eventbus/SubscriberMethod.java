@@ -12,21 +12,13 @@ import java.lang.reflect.Method;
  */
 public class SubscriberMethod {
 
-    /**
-     * 回调方法
-     */
+    /** 回调方法 */
     public Method method;
-    /**
-     * 线程模式
-     */
+    /** 线程模式 */
     public ThreadMode threadMode;
-    /**
-     * 方法中的参数
-     */
+    /** 方法中的参数 */
     public Class<?> eventType;
-    /**
-     * 是否是粘滞事件
-     */
+    /** 是否是粘滞事件 */
     public final boolean sticky;
 
     public SubscriberMethod(Method method, ThreadMode threadMode, Class<?> eventType, boolean sticky) {

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.guan.eventbus.EventBus;
-import com.guan.eventbus.MessageEvent;
 import com.guan.eventbus.Subscribe;
 import com.guan.eventbus.ThreadMode;
 
@@ -99,7 +98,7 @@ public class EventBusPostActivity extends AppCompatActivity {
      */
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEventBus(MessageEvent event) {
-        Log.e(EventBus.TAG,"onEventBus + 接收到EventBus事件：" + event.getName());
+        Log.e(EventBus.TAG,"onEventBus + 接收到EventBus事件：" + event.name);
     }
 
     /**

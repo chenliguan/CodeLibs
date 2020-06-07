@@ -6,7 +6,7 @@ package com.guan.eventbus;
  * Date: 2020/6/7
  * Mender:
  * Modify:
- * Description: post事件
+ * Description: post事件接口
  */
 interface Poster {
 

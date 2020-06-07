@@ -13,16 +13,9 @@ public class Subscription {
     public final Object subscriber;
     public final SubscriberMethod subscriberMethod;
 
-    /**
-     * Becomes false as soon as {@link EventBus#unregister(Object)} is called, which is checked by queued event delivery
-     * {@link EventBus#invokeSubscriber(PendingPost)} to prevent race conditions.
-     */
-    volatile boolean active;
-
     Subscription(Object subscriber, SubscriberMethod subscriberMethod) {
         this.subscriber = subscriber;
         this.subscriberMethod = subscriberMethod;
-        active = true;
     }
 
     @Override
