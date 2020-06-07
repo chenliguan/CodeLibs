@@ -32,8 +32,8 @@ public class EventBusPostActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // 在子线程中发布事件
-                Log.d(EventBus.TAG, "threadName :" + Thread.currentThread().getName());
-                EventBus.getDefault().post(new MessageEvent("子线程中", "123"));
+                Log.d(EventBus.TAG, "子线程中发布 threadName :" + Thread.currentThread().getName());
+                EventBus.getDefault().post(new MessageEvent("小小", "123"));
             }
         }).start();
     }
@@ -42,7 +42,7 @@ public class EventBusPostActivity extends AppCompatActivity {
      * 在主线程中发布事件
      */
     public void postInMain(View view) {
-        Log.d(EventBus.TAG, "threadName :" + Thread.currentThread().getName());
-        EventBus.getDefault().post(new MessageEvent("主线程中","456"));
+        Log.d(EventBus.TAG, "主线程中发布 threadName :" + Thread.currentThread().getName());
+        EventBus.getDefault().post(new MessageEvent("大大","456"));
     }
 }

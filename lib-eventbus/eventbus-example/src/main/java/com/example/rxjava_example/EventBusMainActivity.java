@@ -61,7 +61,7 @@ public class EventBusMainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(MessageEvent event) {
-        Log.d(EventBus.TAG, "getMessage: " + event.toString());
-        Log.d(EventBus.TAG, "getMessage threadName :" + Thread.currentThread().getName());
+        Log.d(EventBus.TAG, "onMessageEvent: " + event.toString());
+        Log.d(EventBus.TAG, "onMessageEvent threadName :" + Thread.currentThread().getName());
     }
 }

@@ -17,5 +17,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Subscribe {
 
-    ThreadMode threadMode() default ThreadMode.MAIN;
+    ThreadMode threadMode() default ThreadMode.POSTING;
 }
