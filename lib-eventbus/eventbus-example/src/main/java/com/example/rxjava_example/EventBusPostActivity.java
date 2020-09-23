@@ -10,7 +10,7 @@ import com.guan.eventbus.Subscribe;
 import com.guan.eventbus.ThreadMode;
 
 /**
- * Author: 陈李冠
+ * Author: chen
  * Version: 1.0.0
  * Date: 2020/5/31
  * Mender:

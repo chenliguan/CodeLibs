@@ -8,7 +8,7 @@ import android.util.Log;
 import java.util.LinkedList;
 
 /**
- * Author: 陈李冠
+ * Author: chen
  * Version: 1.0.0
  * Date: 2020/6/7
  * Mender:
